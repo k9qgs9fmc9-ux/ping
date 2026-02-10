@@ -3,18 +3,18 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* Tech Theme Variables */
-  --tech-bg: #050510;
-  --tech-primary: #00f3ff;
-  --tech-secondary: #bc13fe;
-  --tech-accent: #00ff9d;
-  --tech-text: #e0e0e0;
-  --tech-text-dim: #a0a0a0;
-  --tech-panel-bg: rgba(10, 20, 40, 0.7);
-  --tech-panel-border: rgba(0, 243, 255, 0.2);
-  --tech-glow: 0 0 10px rgba(0, 243, 255, 0.3);
+  /* Light Tech Theme Variables */
+  --tech-bg: #f5f7fa;
+  --tech-primary: #0062ff; /* Deeper blue for visibility on light bg */
+  --tech-secondary: #722ed1; /* Purple */
+  --tech-accent: #00b96b; /* Green */
+  --tech-text: #1f1f1f;
+  --tech-text-dim: #6b7280;
+  --tech-panel-bg: rgba(255, 255, 255, 0.75);
+  --tech-panel-border: rgba(0, 98, 255, 0.1);
+  --tech-glow: 0 4px 20px rgba(0, 98, 255, 0.15);
 
-  color-scheme: dark;
+  color-scheme: light;
   color: var(--tech-text);
   background-color: var(--tech-bg);
 
@@ -32,9 +32,9 @@ body {
   min-height: 100vh;
   background-color: var(--tech-bg);
   background-image: 
-    radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(0, 243, 255, 0.05) 0%, transparent 40%);
-  overflow: hidden; /* Prevent body scroll if we have internal scroll */
+    radial-gradient(circle at 10% 20%, rgba(0, 98, 255, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(114, 46, 209, 0.05) 0%, transparent 40%);
+  overflow: hidden;
 }
 
 #root {
@@ -54,14 +54,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 243, 255, 0.2);
+  background: rgba(0, 98, 255, 0.2);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 243, 255, 0.4);
+  background: rgba(0, 98, 255, 0.4);
 }

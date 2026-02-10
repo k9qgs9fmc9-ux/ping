@@ -16,16 +16,17 @@ const TechBackground = () => {
     canvas.height = height;
 
     const particles = [];
-    const particleCount = 50;
+    const particleCount = 60; // Increased count for light mode
 
     class Particle {
       constructor() {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
+        this.vx = (Math.random() - 0.5) * 0.3; // Slower movement
+        this.vy = (Math.random() - 0.5) * 0.3;
         this.size = Math.random() * 2 + 1;
-        this.color = Math.random() > 0.5 ? '#00f3ff' : '#bc13fe'; // Primary or Secondary
+        // Darker colors for light background
+        this.color = Math.random() > 0.5 ? '#0062ff' : '#722ed1'; 
       }
 
       update() {
@@ -40,7 +41,7 @@ const TechBackground = () => {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
-        ctx.globalAlpha = 0.5;
+        ctx.globalAlpha = 0.4;
         ctx.fill();
       }
     }
@@ -51,9 +52,10 @@ const TechBackground = () => {
     }
 
     const drawGrid = () => {
-      ctx.strokeStyle = 'rgba(0, 243, 255, 0.05)';
+      // Very faint grid
+      ctx.strokeStyle = 'rgba(0, 98, 255, 0.03)';
       ctx.lineWidth = 1;
-      const gridSize = 50;
+      const gridSize = 40;
 
       for (let x = 0; x <= width; x += gridSize) {
         ctx.beginPath();
@@ -88,7 +90,8 @@ const TechBackground = () => {
 
           if (distance < 150) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(0, 243, 255, ${0.1 * (1 - distance / 150)})`;
+            // Faint lines connecting particles
+            ctx.strokeStyle = `rgba(0, 98, 255, ${0.08 * (1 - distance / 150)})`;
             ctx.lineWidth = 0.5;
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);

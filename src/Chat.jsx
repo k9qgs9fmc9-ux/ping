@@ -63,7 +63,7 @@ const Chat = () => {
         key: MODES.EMOTIONAL,
         label: (
           <Space>
-            <ThunderboltOutlined style={{ color: '#00f3ff' }} /> 平哥
+            <ThunderboltOutlined style={{ color: '#0062ff' }} /> 平哥
           </Space>
         ),
       },
@@ -71,7 +71,7 @@ const Chat = () => {
         key: MODES.PRODUCT,
         label: (
           <Space>
-            <ShopOutlined style={{ color: '#00f3ff' }} /> 产品专家
+            <ShopOutlined style={{ color: '#0062ff' }} /> 产品专家
           </Space>
         ),
       },
@@ -79,7 +79,7 @@ const Chat = () => {
         key: MODES.FINANCE,
         label: (
           <Space>
-            <PayCircleOutlined style={{ color: '#00f3ff' }} /> 财务金融专家
+            <PayCircleOutlined style={{ color: '#0062ff' }} /> 财务金融专家
           </Space>
         ),
       },
@@ -87,7 +87,7 @@ const Chat = () => {
         key: MODES.STOCK,
         label: (
           <Space>
-            <RiseOutlined style={{ color: '#00f3ff' }} /> 股票专家
+            <RiseOutlined style={{ color: '#0062ff' }} /> 股票专家
           </Space>
         ),
       }
@@ -115,23 +115,23 @@ const Chat = () => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        border: '1px solid var(--tech-panel-border)',
+        border: '1px solid rgba(255, 255, 255, 0.8)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
             width: '40px',
             height: '40px',
             borderRadius: '12px',
-            background: 'linear-gradient(135deg, #00f3ff 0%, #bc13fe 100%)',
+            background: 'linear-gradient(135deg, #0062ff 0%, #722ed1 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 10px rgba(0, 243, 255, 0.5)'
+            boxShadow: '0 4px 10px rgba(0, 98, 255, 0.2)'
           }}>
             <RobotOutlined style={{ fontSize: '24px', color: '#fff' }} />
           </div>
           <div>
-            <Title level={4} style={{ margin: 0, color: '#fff', textShadow: '0 0 5px rgba(0, 243, 255, 0.5)' }}>
+            <Title level={4} style={{ margin: 0, color: '#1f1f1f' }}>
               AI 助手
             </Title>
             <Space size={4}>
@@ -141,9 +141,9 @@ const Chat = () => {
                   style={{ 
                     margin: 0, 
                     cursor: 'pointer', 
-                    background: 'rgba(0, 243, 255, 0.1)', 
-                    border: '1px solid rgba(0, 243, 255, 0.3)',
-                    color: '#00f3ff'
+                    background: 'rgba(0, 98, 255, 0.05)', 
+                    border: '1px solid rgba(0, 98, 255, 0.2)',
+                    color: '#0062ff'
                   }}
                 >
                   {currentConfig.name} <DownOutlined style={{ fontSize: '10px' }} />
@@ -182,7 +182,7 @@ const Chat = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: '20px',
-        border: '1px solid var(--tech-panel-border)',
+        border: '1px solid rgba(255, 255, 255, 0.8)',
       }}>
         {displayMessages.length === 0 ? (
           <div style={{ 
@@ -191,9 +191,9 @@ const Chat = () => {
             flexDirection: 'column', 
             justifyContent: 'center', 
             alignItems: 'center',
-            opacity: 0.7 
+            opacity: 0.6 
           }}>
-            <RobotOutlined style={{ fontSize: '64px', color: 'rgba(0, 243, 255, 0.2)', marginBottom: '16px' }} />
+            <RobotOutlined style={{ fontSize: '64px', color: '#0062ff', marginBottom: '16px', opacity: 0.2 }} />
             <Text style={{ color: 'var(--tech-text-dim)' }}>开始新的对话...</Text>
           </div>
         ) : (
@@ -215,8 +215,8 @@ const Chat = () => {
                 <Avatar 
                   icon={msg.role === 'user' ? <UserOutlined /> : <RobotOutlined />} 
                   style={{ 
-                    backgroundColor: msg.role === 'user' ? '#bc13fe' : '#00f3ff',
-                    boxShadow: msg.role === 'user' ? '0 0 10px rgba(188, 19, 254, 0.4)' : '0 0 10px rgba(0, 243, 255, 0.4)',
+                    backgroundColor: msg.role === 'user' ? '#722ed1' : '#0062ff',
+                    boxShadow: msg.role === 'user' ? '0 2px 8px rgba(114, 46, 209, 0.2)' : '0 2px 8px rgba(0, 98, 255, 0.2)',
                     flexShrink: 0
                   }} 
                 />
@@ -224,13 +224,13 @@ const Chat = () => {
                   padding: '12px 16px',
                   borderRadius: msg.role === 'user' ? '20px 4px 20px 20px' : '4px 20px 20px 20px',
                   background: msg.role === 'user' 
-                    ? 'linear-gradient(135deg, rgba(188, 19, 254, 0.2) 0%, rgba(188, 19, 254, 0.1) 100%)' 
-                    : 'rgba(255, 255, 255, 0.03)',
+                    ? 'linear-gradient(135deg, rgba(114, 46, 209, 0.05) 0%, rgba(114, 46, 209, 0.1) 100%)' 
+                    : 'rgba(255, 255, 255, 0.8)',
                   border: msg.role === 'user' 
-                    ? '1px solid rgba(188, 19, 254, 0.3)' 
-                    : '1px solid rgba(255, 255, 255, 0.05)',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-                  color: '#e0e0e0',
+                    ? '1px solid rgba(114, 46, 209, 0.1)' 
+                    : '1px solid rgba(0, 98, 255, 0.1)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+                  color: '#1f1f1f',
                   backdropFilter: 'blur(5px)',
                 }}>
                   <div className="markdown-body" style={{ fontSize: '15px', lineHeight: '1.6' }}>
@@ -263,9 +263,9 @@ const Chat = () => {
         display: 'flex',
         gap: '12px',
         alignItems: 'flex-end',
-        background: 'rgba(10, 20, 40, 0.8)',
-        border: '1px solid var(--tech-panel-border)',
-        boxShadow: '0 0 20px rgba(0, 243, 255, 0.05)'
+        background: 'rgba(255, 255, 255, 0.8)',
+        border: '1px solid rgba(255, 255, 255, 0.8)',
+        boxShadow: '0 0 20px rgba(0, 98, 255, 0.05)'
       }}>
         <TextArea
           value={inputValue}
@@ -284,7 +284,7 @@ const Chat = () => {
             background: 'transparent',
             padding: '12px',
             fontSize: '16px',
-            color: '#fff'
+            color: '#1f1f1f'
           }}
         />
         <Button 
@@ -297,16 +297,16 @@ const Chat = () => {
           style={{ 
             marginBottom: '4px', 
             marginRight: '4px',
-            background: 'linear-gradient(135deg, #00f3ff 0%, #0099ff 100%)',
+            background: 'linear-gradient(135deg, #0062ff 0%, #00b96b 100%)',
             border: 'none',
-            boxShadow: '0 0 15px rgba(0, 243, 255, 0.4)'
+            boxShadow: '0 4px 10px rgba(0, 98, 255, 0.2)'
           }}
         />
       </div>
 
       {/* Settings Modal */}
       <Modal
-        title={<span style={{ color: '#fff' }}>设置 API Key</span>}
+        title={<span style={{ color: '#1f1f1f' }}>设置 API Key</span>}
         open={isSettingsOpen}
         onOk={handleSaveSettings}
         onCancel={() => setIsSettingsOpen(false)}
@@ -315,12 +315,13 @@ const Chat = () => {
         centered
         styles={{ 
           content: { 
-            background: 'rgba(15, 23, 42, 0.95)', 
+            background: 'rgba(255, 255, 255, 0.95)', 
             backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(0, 243, 255, 0.2)'
+            border: '1px solid rgba(0, 98, 255, 0.1)'
           },
           mask: {
-            backdropFilter: 'blur(4px)'
+            backdropFilter: 'blur(4px)',
+            background: 'rgba(255, 255, 255, 0.3)'
           }
         }}
       >
@@ -333,12 +334,12 @@ const Chat = () => {
             onChange={(e) => setApiKey(e.target.value)} 
             placeholder="sk-..." 
             style={{ 
-              background: 'rgba(0, 0, 0, 0.3)', 
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-              color: '#fff'
+              background: 'rgba(255, 255, 255, 0.5)', 
+              borderColor: 'rgba(0, 0, 0, 0.1)',
+              color: '#1f1f1f'
             }}
           />
-          <Text style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.4)', marginTop: '8px', display: 'block' }}>
+          <Text style={{ fontSize: '12px', color: '#9ca3af', marginTop: '8px', display: 'block' }}>
             Key 仅保存在本地浏览器中，不会上传到其他服务器。
           </Text>
         </div>

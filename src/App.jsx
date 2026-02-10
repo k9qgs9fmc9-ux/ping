@@ -8,29 +8,32 @@ function App() {
   return (
     <ConfigProvider
       theme={{
-        algorithm: theme.darkAlgorithm,
+        algorithm: theme.defaultAlgorithm, // Switch to default (light) algorithm
         token: {
-          colorPrimary: '#00f3ff',
-          colorBgContainer: 'rgba(30, 30, 40, 0.6)',
-          colorBorder: 'rgba(0, 243, 255, 0.2)',
-          colorText: '#e0e0e0',
+          colorPrimary: '#0062ff', // Tech Blue
+          colorBgContainer: 'rgba(255, 255, 255, 0.6)',
+          colorBorder: 'rgba(0, 98, 255, 0.15)',
+          colorText: '#1f1f1f',
           fontFamily: "'JetBrains Mono', 'Fira Code', Inter, system-ui, sans-serif",
-          borderRadius: 8,
+          borderRadius: 12, // Slightly more rounded
         },
         components: {
           Button: {
-            colorPrimary: '#00f3ff',
+            colorPrimary: '#0062ff',
             algorithm: true, 
-            borderColorDisabled: 'rgba(255,255,255,0.1)',
+            borderColorDisabled: 'rgba(0,0,0,0.05)',
+            defaultShadow: '0 2px 0 rgba(0, 98, 255, 0.1)',
+            primaryShadow: '0 2px 0 rgba(0, 98, 255, 0.1)',
           },
           Input: {
-            colorBgContainer: 'rgba(0, 0, 0, 0.3)',
-            activeBorderColor: '#00f3ff',
-            hoverBorderColor: '#00f3ff',
+            colorBgContainer: 'rgba(255, 255, 255, 0.6)',
+            activeBorderColor: '#0062ff',
+            hoverBorderColor: '#0062ff',
+            activeShadow: '0 0 0 2px rgba(0, 98, 255, 0.1)',
           },
           Modal: {
-            contentBg: '#0f172a',
-            headerBg: '#0f172a',
+            contentBg: '#ffffff',
+            headerBg: '#ffffff',
           }
         }
       }}
