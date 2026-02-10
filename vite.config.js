@@ -6,5 +6,5 @@ export default defineConfig({
   plugins: [react()],
   // To deploy to https://<USERNAME>.github.io/<REPO>/
   // set base to '/<REPO>/'
-  base: '/ai-test/', 
+  base: '/ping/', 
 })
