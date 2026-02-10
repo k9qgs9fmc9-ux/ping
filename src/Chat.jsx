@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { sendMessage, addUserMessage, clearHistory, switchMode } from './features/chat/chatSlice';
 import { Input, Button, Typography, Avatar, Tooltip, Modal, Dropdown, Space, Empty, Tag } from 'antd';
-import { SendOutlined, UserOutlined, SettingOutlined, DeleteOutlined, ShopOutlined, PayCircleOutlined, RiseOutlined, RobotOutlined, DownOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { SendOutlined, UserOutlined, SettingOutlined, DeleteOutlined, ShopOutlined, PayCircleOutlined, RiseOutlined, RobotOutlined, DownOutlined, ThunderboltOutlined, HomeOutlined } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -88,6 +88,14 @@ const Chat = () => {
         label: (
           <Space>
             <RiseOutlined style={{ color: '#0062ff' }} /> 股票专家
+          </Space>
+        ),
+      },
+      {
+        key: MODES.DECORATION,
+        label: (
+          <Space>
+            <HomeOutlined style={{ color: '#0062ff' }} /> 装修专家
           </Space>
         ),
       }

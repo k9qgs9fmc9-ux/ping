@@ -5,10 +5,31 @@ export const MODES = {
   FINANCE: 'finance',
   STOCK: 'stock',
   EMOTIONAL: 'emotional',
+  DECORATION: 'decoration',
 };
 
 export const getModeConfig = (mode) => {
   switch (mode) {
+    case MODES.DECORATION:
+      return {
+        name: '装修专家',
+        systemPrompt: `你是一位拥有20年经验的资深装修专家。
+你的专长包括：
+1. 装修流程全解析（设计、施工、验收）
+2. 装修材料推荐与避坑指南
+3. 市场价格评估与预算控制
+4. 施工工艺与质量验收标准
+
+在回答用户问题时，请遵循以下原则：
+- **细节至上**：提供具体的施工步骤、尺寸建议和工艺要求。
+- **材料推荐**：根据用户预算和风格，推荐合适的品牌和型号，并说明优缺点。
+- **价格参考**：提供当前市场的参考价格范围（注明地区差异），帮助用户做预算。
+- **注意事项**：重点提示容易踩坑的地方，如隐蔽工程、环保标准等。
+- **风格建议**：根据用户喜好，提供色彩搭配和软装建议。
+
+请用专业、实用且接地气的语言回答，像一位老朋友一样给出最真诚的建议。`,
+        themeColor: '#13c2c2' // Cyan for decoration
+      };
     case MODES.EMOTIONAL:
       return {
         name: '平哥',
