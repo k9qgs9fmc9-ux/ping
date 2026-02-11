@@ -1,22 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { sendMessage, addUserMessage, clearHistory, switchMode } from './features/chat/chatSlice';
-import { Input, Button, Typography, Avatar, Tooltip, Modal, Dropdown, Space, Empty, Tag } from 'antd';
-import { SendOutlined, UserOutlined, SettingOutlined, DeleteOutlined, ShopOutlined, PayCircleOutlined, RiseOutlined, RobotOutlined, DownOutlined, ThunderboltOutlined, HomeOutlined, HeartOutlined } from '@ant-design/icons';
+import { Input, Button, Typography, Avatar, Tooltip, Dropdown, Space, Empty, Tag } from 'antd';
+import { SendOutlined, UserOutlined, DeleteOutlined, ShopOutlined, PayCircleOutlined, RiseOutlined, ThunderboltOutlined, HomeOutlined, HeartOutlined, DownOutlined, SettingOutlined, RobotOutlined } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThinkingBubble from './components/ThinkingBubble';
 import { MODES, getModeConfig } from './data/modes';
+import { useSettings } from './context/SettingsContext';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
 
 const Chat = () => {
   const [inputValue, setInputValue] = useState('');
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  // Default to the provided key if not found in localStorage
-  const [apiKey, setApiKey] = useState(localStorage.getItem('dashscope_api_key') || 'sk-62c624e8f0f2403da26b02aa348ec860');
+  const { apiKey, chatBaseUrl, openSettings } = useSettings();
   
   const dispatch = useDispatch();
   const { messages, status, mode } = useSelector((state) => state.chat);
@@ -37,17 +36,8 @@ const Chat = () => {
 
     dispatch(addUserMessage(inputValue));
     const newHistory = [...messages, { role: 'user', content: inputValue }];
-    dispatch(sendMessage({ messages: newHistory, apiKey }));
+    dispatch(sendMessage({ messages: newHistory, apiKey, baseUrl: chatBaseUrl }));
     setInputValue('');
-  };
-
-  const handleSaveSettings = () => {
-    if (apiKey) {
-      localStorage.setItem('dashscope_api_key', apiKey);
-    } else {
-      localStorage.removeItem('dashscope_api_key');
-    }
-    setIsSettingsOpen(false);
   };
 
   const handleClear = () => {
@@ -183,7 +173,7 @@ const Chat = () => {
           <Tooltip title="设置 API Key">
             <Button 
               icon={<SettingOutlined />} 
-              onClick={() => setIsSettingsOpen(true)} 
+              onClick={openSettings} 
               type="text"
               style={{ color: 'var(--tech-text-dim)' }}
             />
@@ -323,46 +313,7 @@ const Chat = () => {
         />
       </div>
 
-      {/* Settings Modal */}
-      <Modal
-        title={<span style={{ color: '#1f1f1f' }}>设置 API Key</span>}
-        open={isSettingsOpen}
-        onOk={handleSaveSettings}
-        onCancel={() => setIsSettingsOpen(false)}
-        okText="保存"
-        cancelText="取消"
-        centered
-        styles={{ 
-          content: { 
-            background: 'rgba(255, 255, 255, 0.95)', 
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(0, 98, 255, 0.1)'
-          },
-          mask: {
-            backdropFilter: 'blur(4px)',
-            background: 'rgba(255, 255, 255, 0.3)'
-          }
-        }}
-      >
-        <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-          <Text style={{ color: 'var(--tech-text-dim)', display: 'block', marginBottom: '8px' }}>
-            请输入您的 DashScope API Key (sk-...)
-          </Text>
-          <Input.Password 
-            value={apiKey} 
-            onChange={(e) => setApiKey(e.target.value)} 
-            placeholder="sk-..." 
-            style={{ 
-              background: 'rgba(255, 255, 255, 0.5)', 
-              borderColor: 'rgba(0, 0, 0, 0.1)',
-              color: '#1f1f1f'
-            }}
-          />
-          <Text style={{ fontSize: '12px', color: '#9ca3af', marginTop: '8px', display: 'block' }}>
-            Key 仅保存在本地浏览器中，不会上传到其他服务器。
-          </Text>
-        </div>
-      </Modal>
+      {/* Settings Modal - Moved to GlobalSettingsModal */}
     </div>
   );
 };

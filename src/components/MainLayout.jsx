@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Menu, Avatar, Space, Typography, theme } from 'antd';
+import { Layout, Menu, Avatar, Space, Typography, theme, Button, Tooltip } from 'antd';
 import { 
   RobotOutlined, 
   FilePptOutlined, 
@@ -7,14 +7,19 @@ import {
   FileTextOutlined, 
   MenuUnfoldOutlined, 
   MenuFoldOutlined,
-  AppstoreOutlined
+  AppstoreOutlined,
+  VideoCameraOutlined,
+  SettingOutlined,
+  HomeOutlined
 } from '@ant-design/icons';
+import { useSettings } from '../context/SettingsContext';
 
 const { Sider, Content } = Layout;
 const { Text } = Typography;
 
 const MainLayout = ({ activeModule, onModuleChange, children }) => {
   const [collapsed, setCollapsed] = React.useState(true);
+  const { openSettings } = useSettings();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -40,6 +45,11 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
       icon: <FileTextOutlined style={{ fontSize: '18px' }} />,
       label: '文件分析',
     },
+    {
+      key: 'video',
+      icon: <VideoCameraOutlined style={{ fontSize: '18px' }} />,
+      label: '视频生成',
+    },
   ];
 
   return (
@@ -55,6 +65,8 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
           backdropFilter: 'blur(20px)',
           borderRight: '1px solid rgba(255, 255, 255, 0.3)',
           zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column'
         }}
         trigger={null}
       >
@@ -75,7 +87,7 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
               color: '#0062ff'
             }}
           >
-            <AppstoreOutlined style={{ fontSize: 24 }} />
+            {collapsed ? <HomeOutlined style={{ fontSize: 24 }} /> : <HomeOutlined style={{ fontSize: 24 }} />}
             {!collapsed && (
               <span style={{ marginLeft: 12, fontWeight: 'bold', fontSize: 18, color: '#1f1f1f' }}>
                 守望
@@ -91,36 +103,45 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
           items={menuItems}
           style={{ 
             background: 'transparent', 
-            borderRight: 0, 
-            padding: '12px 8px' 
+            borderRight: 0,
+            flex: 1
           }}
         />
-        
+
         <div style={{ 
-          position: 'absolute', 
-          bottom: 24, 
-          width: '100%', 
-          textAlign: 'center' 
+          padding: collapsed ? '12px 0' : '12px 16px', 
+          display: 'flex', 
+          justifyContent: collapsed ? 'center' : 'flex-start',
+          borderTop: '1px solid rgba(0,0,0,0.03)'
         }}>
-          <div 
-            onClick={() => setCollapsed(!collapsed)}
-            style={{ 
-              cursor: 'pointer',
-              color: 'rgba(0,0,0,0.45)',
-              padding: 12
-            }}
-          >
-            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          </div>
+          <Tooltip title="全局设置" placement="right">
+            <Button 
+              type="text" 
+              icon={<SettingOutlined style={{ fontSize: 18 }} />} 
+              onClick={openSettings}
+              style={{ 
+                width: collapsed ? 40 : '100%', 
+                justifyContent: collapsed ? 'center' : 'flex-start',
+                color: 'rgba(0,0,0,0.45)'
+              }}
+            >
+              {!collapsed && <span style={{ marginLeft: 8 }}>全局设置</span>}
+            </Button>
+          </Tooltip>
         </div>
       </Sider>
-      
       <Layout style={{ background: 'transparent' }}>
         <Content style={{ 
-          margin: 0, 
-          height: '100vh', 
+          margin: '24px 16px', 
+          padding: 24, 
+          background: 'rgba(255, 255, 255, 0.7)', 
+          backdropFilter: 'blur(10px)',
+          borderRadius: 24,
+          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+          border: '1px solid rgba(255, 255, 255, 0.4)',
           overflow: 'hidden',
-          position: 'relative'
+          display: 'flex',
+          flexDirection: 'column'
         }}>
           {children}
         </Content>

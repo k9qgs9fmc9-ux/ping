@@ -1,46 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import OpenAI from 'openai';
 import { MODES, getModeConfig } from '../../data/modes';
+import { sendChatRequest } from '../../services/dashscope';
 
 // Async thunk to send message to backend or directly to API
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
-  async ({ messages, apiKey }, { rejectWithValue }) => {
+  async ({ messages, apiKey, baseUrl }, { rejectWithValue }) => {
     try {
-      // If API Key is provided, use client-side call
-      if (apiKey) {
-        const openai = new OpenAI({
-          apiKey: apiKey,
-          baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-          dangerouslyAllowBrowser: true // Enable browser usage
-        });
-
-        const completion = await openai.chat.completions.create({
-          model: 'qwen-max',
-          messages: messages,
-        });
-
-        return completion.choices[0].message;
-      } else {
-        // Fallback to backend server
-        // Use relative path to work with both dev and production (if served from same origin)
-        // Or default to localhost for dev
-        const apiBase = import.meta.env.PROD ? '/api/chat' : 'http://localhost:3001/api/chat';
-        try {
-          const response = await axios.post(apiBase, { messages });
-          return response.data.choices[0].message;
-        } catch (axiosError) {
-          // If 404, it means backend is missing (common in static hosting like GitHub Pages)
-          if (axiosError.response && axiosError.response.status === 404) {
-            throw new Error("检测到无后端服务。请点击右上角设置图标，填入您的 API Key 以使用纯前端模式。");
-          }
-          throw axiosError;
-        }
-      }
+      return await sendChatRequest({ messages, apiKey, baseUrl });
     } catch (error) {
       console.error('Chat Error:', error);
-      return rejectWithValue(error.response ? error.response.data : error.message);
+      return rejectWithValue(error.message || error.toString());
     }
   }
 );
