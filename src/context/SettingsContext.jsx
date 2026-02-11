@@ -5,7 +5,9 @@ const SettingsContext = createContext();
 export const useSettings = () => useContext(SettingsContext);
 
 export const SettingsProvider = ({ children }) => {
-  const [apiKey, setApiKey] = useState(localStorage.getItem('dashscope_api_key') || '');
+  // Default API Key for convenience (Warning: Exposed in frontend source)
+  const DEFAULT_API_KEY = 'sk-62c624e8f0f2403da26b02aa348ec860';
+  const [apiKey, setApiKey] = useState(localStorage.getItem('dashscope_api_key') || DEFAULT_API_KEY);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [chatBaseUrl, setChatBaseUrl] = useState(localStorage.getItem('chat_base_url') || 'https://dashscope.aliyuncs.com/compatible-mode/v1');
   
