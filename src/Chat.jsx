@@ -15,7 +15,8 @@ const { Title, Text } = Typography;
 const Chat = () => {
   const [inputValue, setInputValue] = useState('');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [apiKey, setApiKey] = useState(localStorage.getItem('dashscope_api_key') || '');
+  // Default to the provided key if not found in localStorage
+  const [apiKey, setApiKey] = useState(localStorage.getItem('dashscope_api_key') || 'sk-62c624e8f0f2403da26b02aa348ec860');
   
   const dispatch = useDispatch();
   const { messages, status, mode } = useSelector((state) => state.chat);
@@ -63,7 +64,7 @@ const Chat = () => {
         key: MODES.EMOTIONAL,
         label: (
           <Space>
-            <ThunderboltOutlined style={{ color: '#0062ff' }} /> 平哥
+            <ThunderboltOutlined style={{ color: '#0062ff' }} /> 天沐锦江VIP服务
           </Space>
         ),
       },
@@ -117,7 +118,9 @@ const Chat = () => {
     <div style={{
       width: '100%',
       maxWidth: '1000px',
-      height: '90vh',
+      height: '100%',
+      margin: '0 auto',
+      padding: '24px',
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
@@ -144,11 +147,11 @@ const Chat = () => {
             justifyContent: 'center',
             boxShadow: '0 4px 10px rgba(0, 98, 255, 0.2)'
           }}>
-            <RobotOutlined style={{ fontSize: '24px', color: '#fff' }} />
+            <HomeOutlined style={{ fontSize: '24px', color: '#fff' }} />
           </div>
           <div>
             <Title level={4} style={{ margin: 0, color: '#1f1f1f' }}>
-              AI 助手
+              天沐锦江VIP服务
             </Title>
             <Space size={4}>
               <Dropdown menu={modeMenuProps} trigger={['click']}>
@@ -209,7 +212,7 @@ const Chat = () => {
             alignItems: 'center',
             opacity: 0.6 
           }}>
-            <RobotOutlined style={{ fontSize: '64px', color: '#0062ff', marginBottom: '16px', opacity: 0.2 }} />
+            <HomeOutlined style={{ fontSize: '64px', color: '#0062ff', marginBottom: '16px', opacity: 0.2 }} />
             <Text style={{ color: 'var(--tech-text-dim)' }}>开始新的对话...</Text>
           </div>
         ) : (

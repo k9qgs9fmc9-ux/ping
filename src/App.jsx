@@ -1,10 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ConfigProvider, theme } from 'antd';
 import Chat from './Chat';
+import MainLayout from './components/MainLayout';
+import PPTGenerator from './components/PPTGenerator';
+import ExcelGenerator from './components/ExcelGenerator';
+import FileAnalyzer from './components/FileAnalyzer';
 import './App.css';
 import TechBackground from './components/TechBackground';
 
 function App() {
+  const [activeModule, setActiveModule] = useState('chat');
+
+  const renderContent = () => {
+    switch (activeModule) {
+      case 'chat':
+        return <Chat />;
+      case 'ppt':
+        return <PPTGenerator />;
+      case 'excel':
+        return <ExcelGenerator />;
+      case 'file':
+        return <FileAnalyzer />;
+      default:
+        return <Chat />;
+    }
+  };
+
   return (
     <ConfigProvider
       theme={{
@@ -40,7 +61,9 @@ function App() {
     >
       <div className="App">
         <TechBackground />
-        <Chat />
+        <MainLayout activeModule={activeModule} onModuleChange={setActiveModule}>
+          {renderContent()}
+        </MainLayout>
       </div>
     </ConfigProvider>
   );
