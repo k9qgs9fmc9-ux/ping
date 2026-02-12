@@ -99,14 +99,14 @@ const VideoGenerator = () => {
             <VideoCameraOutlined style={{ marginRight: 12, color: '#0062ff' }} />
             视频生成助手 (Wan2.1)
           </Title>
-          <Tooltip title="设置 API Key">
+          {/* <Tooltip title="设置 API Key">
             <Button 
               icon={<SettingOutlined />} 
               onClick={openSettings}
               type="text"
               size="large"
             />
-          </Tooltip>
+          </Tooltip> */}
         </div>
 
         <Card 
@@ -163,9 +163,9 @@ const VideoGenerator = () => {
             </Space.Compact>
           )}
           <div style={{ marginTop: 8 }}>
-            <Text type="secondary" style={{ fontSize: 12 }}>
+            {/* <Text type="secondary" style={{ fontSize: 12 }}>
               * 使用阿里云通义万相 (Wanx) 模型生成，需要消耗 DashScope API Token。生成过程可能需要几分钟。
-            </Text>
+            </Text> */}
           </div>
         </Card>
 

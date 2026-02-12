@@ -110,7 +110,7 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
         justifyContent: collapsed ? 'center' : 'flex-start',
         borderTop: '1px solid rgba(0,0,0,0.03)'
       }}>
-        <Tooltip title={(!collapsed || isMobile) ? "全局设置" : ""} placement="right">
+        {/* <Tooltip title={(!collapsed || isMobile) ? "全局设置" : ""} placement="right">
           <Button 
             type="text" 
             icon={<SettingOutlined style={{ fontSize: 18 }} />} 
@@ -126,7 +126,7 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
           >
             {(!collapsed || isMobile) && <span style={{ marginLeft: 8 }}>全局设置</span>}
           </Button>
-        </Tooltip>
+        </Tooltip> */}
       </div>
     </>
   );

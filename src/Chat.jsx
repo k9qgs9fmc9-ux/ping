@@ -186,14 +186,14 @@ const Chat = () => {
               style={{ color: 'var(--tech-text-dim)' }}
             />
           </Tooltip>
-          <Tooltip title="设置 API Key">
+          {/* <Tooltip title="设置 API Key">
             <Button 
               icon={<SettingOutlined />} 
               onClick={openSettings} 
               type="text"
               style={{ color: 'var(--tech-text-dim)' }}
             />
-          </Tooltip>
+          </Tooltip> */}
         </Space>
       </div>
 
