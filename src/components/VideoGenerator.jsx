@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Card, Typography, Space, Progress, Result, Empty, message, Alert, Modal, Tooltip } from 'antd';
+import { Button, Input, Card, Typography, Space, Progress, Result, Empty, message, Alert, Modal, Tooltip, Grid } from 'antd';
 import { VideoCameraOutlined, PlayCircleOutlined, DownloadOutlined, SendOutlined, SettingOutlined } from '@ant-design/icons';
 import { useSettings } from '../context/SettingsContext';
 import { submitVideoTask, checkVideoTask } from '../services/dashscope';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
+const { useBreakpoint } = Grid;
 
 const VideoGenerator = () => {
   const [loading, setLoading] = useState(false);
@@ -14,6 +15,9 @@ const VideoGenerator = () => {
   const [videoUrl, setVideoUrl] = useState(null);
   const [error, setError] = useState(null);
   const [statusText, setStatusText] = useState('');
+  
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
   
   // Use Global Settings
   const { apiKey, openSettings } = useSettings();
@@ -88,10 +92,10 @@ const VideoGenerator = () => {
   };
 
   return (
-    <div style={{ height: '100%', padding: '24px', overflowY: 'auto' }}>
+    <div style={{ height: '100%', padding: isMobile ? '12px' : '24px', overflowY: 'auto' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-          <Title level={4} style={{ margin: 0, display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isMobile ? 16 : 32 }}>
+          <Title level={4} style={{ margin: 0, display: 'flex', alignItems: 'center', fontSize: isMobile ? '16px' : '20px' }}>
             <VideoCameraOutlined style={{ marginRight: 12, color: '#0062ff' }} />
             视频生成助手 (Wan2.1)
           </Title>
@@ -114,26 +118,50 @@ const VideoGenerator = () => {
             boxShadow: '0 4px 24px rgba(0, 0, 0, 0.05)',
             marginBottom: 24
           }}
+          bodyStyle={{ padding: isMobile ? 16 : 24 }}
         >
-          <Space.Compact style={{ width: '100%' }}>
-            <Input 
-              size="large" 
-              placeholder="描述你想生成的视频内容，例如：一只在太空中飞翔的熊猫，赛博朋克风格..." 
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              onPressEnter={handleGenerate}
-              disabled={loading}
-            />
-            <Button 
-              type="primary" 
-              size="large" 
-              icon={<SendOutlined />} 
-              loading={loading}
-              onClick={handleGenerate}
-            >
-              生成
-            </Button>
-          </Space.Compact>
+          {isMobile ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Input 
+                size="large" 
+                placeholder="描述你想生成的视频内容..." 
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                onPressEnter={handleGenerate}
+                disabled={loading}
+              />
+              <Button 
+                type="primary" 
+                size="large" 
+                icon={<SendOutlined />} 
+                loading={loading}
+                onClick={handleGenerate}
+                block
+              >
+                生成
+              </Button>
+            </div>
+          ) : (
+            <Space.Compact style={{ width: '100%' }}>
+              <Input 
+                size="large" 
+                placeholder="描述你想生成的视频内容，例如：一只在太空中飞翔的熊猫，赛博朋克风格..." 
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                onPressEnter={handleGenerate}
+                disabled={loading}
+              />
+              <Button 
+                type="primary" 
+                size="large" 
+                icon={<SendOutlined />} 
+                loading={loading}
+                onClick={handleGenerate}
+              >
+                生成
+              </Button>
+            </Space.Compact>
+          )}
           <div style={{ marginTop: 8 }}>
             <Text type="secondary" style={{ fontSize: 12 }}>
               * 使用阿里云通义万相 (Wanx) 模型生成，需要消耗 DashScope API Token。生成过程可能需要几分钟。
@@ -153,10 +181,10 @@ const VideoGenerator = () => {
           />
         )}
 
-        <Card className="glass-panel" bordered={false} bodyStyle={{ padding: 40, minHeight: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Card className="glass-panel" bordered={false} bodyStyle={{ padding: isMobile ? 20 : 40, minHeight: isMobile ? 300 : 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {loading ? (
             <div style={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
-              <Progress type="circle" percent={progress} strokeColor={{ '0%': '#108ee9', '100%': '#87d068' }} />
+              <Progress type="circle" percent={progress} strokeColor={{ '0%': '#108ee9', '100%': '#87d068' }} size={isMobile ? 120 : 180} />
               <div style={{ marginTop: 24 }}>
                 <Text strong style={{ fontSize: 16 }}>{statusText}</Text>
                 <br />
@@ -182,14 +210,14 @@ const VideoGenerator = () => {
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
-              <Space>
-                <Button type="primary" icon={<DownloadOutlined />} size="large" href={videoUrl} target="_blank">
+              <Space direction={isMobile ? 'vertical' : 'horizontal'} style={{ width: isMobile ? '100%' : 'auto' }}>
+                <Button type="primary" icon={<DownloadOutlined />} size="large" href={videoUrl} target="_blank" block={isMobile}>
                   下载视频
                 </Button>
                 <Button icon={<PlayCircleOutlined />} size="large" onClick={() => {
                   const video = document.querySelector('video');
                   if (video) video.play();
-                }}>
+                }} block={isMobile}>
                   重新播放
                 </Button>
               </Space>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { sendMessage, addUserMessage, clearHistory, switchMode } from './features/chat/chatSlice';
-import { Input, Button, Typography, Avatar, Tooltip, Dropdown, Space, Empty, Tag } from 'antd';
-import { SendOutlined, UserOutlined, DeleteOutlined, ShopOutlined, PayCircleOutlined, RiseOutlined, ThunderboltOutlined, HomeOutlined, HeartOutlined, DownOutlined, SettingOutlined, RobotOutlined } from '@ant-design/icons';
+import { Input, Button, Typography, Avatar, Tooltip, Dropdown, Space, Empty, Tag, Grid } from 'antd';
+import { SendOutlined, UserOutlined, DeleteOutlined, ShopOutlined, PayCircleOutlined, RiseOutlined, HomeOutlined, HeartOutlined, DownOutlined, SettingOutlined, RobotOutlined, CommentOutlined } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,6 +12,16 @@ import { useSettings } from './context/SettingsContext';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
+const { useBreakpoint } = Grid;
+
+const MODE_ICONS = {
+  [MODES.GENERAL]: CommentOutlined,
+  [MODES.PRODUCT]: ShopOutlined,
+  [MODES.FINANCE]: PayCircleOutlined,
+  [MODES.STOCK]: RiseOutlined,
+  [MODES.DECORATION]: HomeOutlined,
+  [MODES.PARENTING]: HeartOutlined,
+};
 
 const Chat = () => {
   const [inputValue, setInputValue] = useState('');
@@ -21,7 +31,11 @@ const Chat = () => {
   const { messages, status, mode } = useSelector((state) => state.chat);
   const messagesEndRef = useRef(null);
   
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+  
   const currentConfig = getModeConfig(mode);
+  const CurrentIcon = MODE_ICONS[mode] || CommentOutlined;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -51,10 +65,10 @@ const Chat = () => {
   const modeMenuProps = {
     items: [
       {
-        key: MODES.EMOTIONAL,
+        key: MODES.GENERAL,
         label: (
           <Space>
-            <ThunderboltOutlined style={{ color: '#0062ff' }} /> 天沐锦江VIP服务
+            <CommentOutlined style={{ color: '#0062ff' }} /> 通用咨询
           </Space>
         ),
       },
@@ -110,7 +124,7 @@ const Chat = () => {
       maxWidth: '1000px',
       height: '100%',
       margin: '0 auto',
-      padding: '24px',
+      padding: isMobile ? '12px' : '24px',
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
@@ -118,7 +132,7 @@ const Chat = () => {
     }}>
       {/* Header Panel */}
       <div className="glass-panel" style={{
-        padding: '16px 24px',
+        padding: isMobile ? '12px' : '16px 24px',
         borderRadius: '16px',
         marginBottom: '16px',
         display: 'flex',
@@ -128,19 +142,20 @@ const Chat = () => {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
-            width: '40px',
-            height: '40px',
+            width: isMobile ? '32px' : '40px',
+            height: isMobile ? '32px' : '40px',
             borderRadius: '12px',
             background: 'linear-gradient(135deg, #0062ff 0%, #722ed1 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 4px 10px rgba(0, 98, 255, 0.2)'
+            boxShadow: '0 4px 10px rgba(0, 98, 255, 0.2)',
+            flexShrink: 0
           }}>
-            <HomeOutlined style={{ fontSize: '24px', color: '#fff' }} />
+            <CurrentIcon style={{ fontSize: isMobile ? '18px' : '24px', color: '#fff' }} />
           </div>
           <div>
-            <Title level={4} style={{ margin: 0, color: '#1f1f1f' }}>
+            <Title level={4} style={{ margin: 0, color: '#1f1f1f', fontSize: isMobile ? '16px' : '20px' }}>
               天沐锦江VIP服务
             </Title>
             <Space size={4}>
@@ -152,7 +167,8 @@ const Chat = () => {
                     cursor: 'pointer', 
                     background: 'rgba(0, 98, 255, 0.05)', 
                     border: '1px solid rgba(0, 98, 255, 0.2)',
-                    color: '#0062ff'
+                    color: '#0062ff',
+                    fontSize: isMobile ? '12px' : '14px'
                   }}
                 >
                   {currentConfig.name} <DownOutlined style={{ fontSize: '10px' }} />
@@ -161,7 +177,7 @@ const Chat = () => {
             </Space>
           </div>
         </div>
-        <Space>
+        <Space size={isMobile ? 0 : 8}>
           <Tooltip title="清空对话">
             <Button 
               icon={<DeleteOutlined />} 
@@ -186,7 +202,7 @@ const Chat = () => {
         flex: 1,
         borderRadius: '16px',
         marginBottom: '16px',
-        padding: '24px',
+        padding: isMobile ? '16px' : '24px',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
@@ -202,7 +218,7 @@ const Chat = () => {
             alignItems: 'center',
             opacity: 0.6 
           }}>
-            <HomeOutlined style={{ fontSize: '64px', color: '#0062ff', marginBottom: '16px', opacity: 0.2 }} />
+            <HomeOutlined style={{ fontSize: isMobile ? '48px' : '64px', color: '#0062ff', marginBottom: '16px', opacity: 0.2 }} />
             <Text style={{ color: 'var(--tech-text-dim)' }}>开始新的对话...</Text>
           </div>
         ) : (
@@ -215,9 +231,9 @@ const Chat = () => {
                 transition={{ duration: 0.3 }}
                 style={{
                   alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                  maxWidth: '80%',
+                  maxWidth: isMobile ? '90%' : '80%',
                   display: 'flex',
-                  gap: '12px',
+                  gap: isMobile ? '8px' : '12px',
                   flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
                 }}
               >
@@ -226,11 +242,13 @@ const Chat = () => {
                   style={{ 
                     backgroundColor: msg.role === 'user' ? '#722ed1' : '#0062ff',
                     boxShadow: msg.role === 'user' ? '0 2px 8px rgba(114, 46, 209, 0.2)' : '0 2px 8px rgba(0, 98, 255, 0.2)',
-                    flexShrink: 0
+                    flexShrink: 0,
+                    width: isMobile ? 32 : 32,
+                    height: isMobile ? 32 : 32
                   }} 
                 />
                 <div style={{
-                  padding: '12px 16px',
+                  padding: isMobile ? '8px 12px' : '12px 16px',
                   borderRadius: msg.role === 'user' ? '20px 4px 20px 20px' : '4px 20px 20px 20px',
                   background: msg.role === 'user' 
                     ? 'linear-gradient(135deg, rgba(114, 46, 209, 0.05) 0%, rgba(114, 46, 209, 0.1) 100%)' 
@@ -242,7 +260,7 @@ const Chat = () => {
                   color: '#1f1f1f',
                   backdropFilter: 'blur(5px)',
                 }}>
-                  <div className="markdown-body" style={{ fontSize: '15px', lineHeight: '1.6' }}>
+                  <div className="markdown-body" style={{ fontSize: isMobile ? '14px' : '15px', lineHeight: '1.6' }}>
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {msg.content}
                     </ReactMarkdown>
@@ -270,7 +288,7 @@ const Chat = () => {
         padding: '8px',
         borderRadius: '16px',
         display: 'flex',
-        gap: '12px',
+        gap: isMobile ? '8px' : '12px',
         alignItems: 'flex-end',
         background: 'rgba(255, 255, 255, 0.8)',
         border: '1px solid rgba(255, 255, 255, 0.8)',
@@ -291,8 +309,8 @@ const Chat = () => {
             resize: 'none', 
             border: 'none', 
             background: 'transparent',
-            padding: '12px',
-            fontSize: '16px',
+            padding: isMobile ? '8px' : '12px',
+            fontSize: isMobile ? '14px' : '16px',
             color: '#1f1f1f'
           }}
         />

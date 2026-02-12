@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Upload, Button, Card, Typography, Space, List, Tag, Progress, message, Empty } from 'antd';
+import { Upload, Button, Card, Typography, Space, List, Tag, Progress, message, Empty, Grid } from 'antd';
 import { InboxOutlined, FileTextOutlined, BarChartOutlined, CheckCircleOutlined } from '@ant-design/icons';
 
 const { Dragger } = Upload;
 const { Title, Paragraph } = Typography;
+const { useBreakpoint } = Grid;
 
 const FileAnalyzer = () => {
   const [fileList, setFileList] = useState([]);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
+
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
 
   const props = {
     name: 'file',
@@ -50,16 +54,16 @@ const FileAnalyzer = () => {
   };
 
   return (
-    <div style={{ height: '100%', padding: '24px', overflowY: 'auto' }}>
+    <div style={{ height: '100%', padding: isMobile ? '12px' : '24px', overflowY: 'auto' }}>
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
-        <Title level={2} style={{ marginBottom: 32, textAlign: 'center' }}>
+        <Title level={2} style={{ marginBottom: isMobile ? 24 : 32, textAlign: 'center', fontSize: isMobile ? '24px' : '30px' }}>
           <Space>
             <BarChartOutlined style={{ color: '#722ed1' }} />
             智能文件分析
           </Space>
         </Title>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 24 }}>
           {/* Left Column: Upload */}
           <div>
             <Card className="glass-panel" title="上传文件" bordered={false}>

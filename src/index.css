@@ -26,25 +26,20 @@
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
   background-color: var(--tech-bg);
   background-image: 
     radial-gradient(circle at 10% 20%, rgba(0, 98, 255, 0.05) 0%, transparent 40%),
     radial-gradient(circle at 90% 80%, rgba(114, 46, 209, 0.05) 0%, transparent 40%);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 #root {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 /* Scrollbar Styling */

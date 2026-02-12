@@ -79,7 +79,8 @@ export const submitVideoTask = async ({ prompt, apiKey }) => {
       return response.data;
     } catch (error) {
       if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
-        throw new Error(`网络请求失败 (CORS)。阿里云视频生成 API 不支持浏览器直接跨域访问。纯前端模式下暂无法直接生成视频，除非使用自定义代理。`);
+        throw new Error(`暂不支持该服务！！！`)
+        // throw new Error(`网络请求失败 (CORS)。阿里云视频生成 API 不支持浏览器直接跨域访问。纯前端模式下暂无法直接生成视频，除非使用自定义代理。`);
       }
       throw error;
     }

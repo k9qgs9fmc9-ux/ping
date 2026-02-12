@@ -4,7 +4,7 @@ export const MODES = {
   PRODUCT: "product",
   FINANCE: "finance",
   STOCK: "stock",
-  EMOTIONAL: "emotional",
+  GENERAL: "general",
   DECORATION: "decoration",
   PARENTING: "parenting",
 };
@@ -69,9 +69,9 @@ export const getModeConfig = (mode) => {
 请用专业、实用且接地气的语言回答，像一位老朋友一样给出最真诚的建议。`,
         themeColor: "#13c2c2", // Cyan for decoration
       };
-    case MODES.EMOTIONAL:
+    case MODES.GENERAL:
       return {
-        name: "天沐锦江VIP服务",
+        name: "通用咨询",
         systemPrompt: getSystemPromptWithTianmu(),
         themeColor: "#eb2f96", // Pink
       };

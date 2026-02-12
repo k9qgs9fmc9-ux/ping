@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Layout, Button, Input, Card, Table, Empty, Typography, Space, Tooltip } from 'antd';
+import { Layout, Button, Input, Card, Table, Empty, Typography, Space, Tooltip, Grid } from 'antd';
 import { FileExcelOutlined, SendOutlined, DownloadOutlined, TableOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
+const { useBreakpoint } = Grid;
 
 const ExcelGenerator = () => {
   const [loading, setLoading] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [data, setData] = useState(null);
+
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
 
   const handleGenerate = () => {
     if (!prompt.trim()) return;
@@ -35,34 +39,56 @@ const ExcelGenerator = () => {
   ];
 
   return (
-    <div style={{ height: '100%', padding: '24px', overflowY: 'auto' }}>
+    <div style={{ height: '100%', padding: isMobile ? '12px' : '24px', overflowY: 'auto' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-        <Title level={2} style={{ marginBottom: 32, textAlign: 'center' }}>
+        <Title level={2} style={{ marginBottom: isMobile ? 24 : 32, textAlign: 'center', fontSize: isMobile ? '24px' : '30px' }}>
           <Space>
             <FileExcelOutlined style={{ color: '#52c41a' }} />
             AI Excel 智能表格
           </Space>
         </Title>
 
-        <Card className="glass-panel" bordered={false} style={{ marginBottom: 24 }}>
-          <Space.Compact style={{ width: '100%' }}>
-            <Input 
-              size="large" 
-              placeholder="描述你需要生成的表格，例如：生成一份1月份的公司日常报销明细表..." 
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              onPressEnter={handleGenerate}
-            />
-            <Button 
-              type="primary" 
-              size="large" 
-              icon={<SendOutlined />} 
-              loading={loading}
-              onClick={handleGenerate}
-            >
-              生成
-            </Button>
-          </Space.Compact>
+        <Card className="glass-panel" bordered={false} style={{ marginBottom: 24 }} bodyStyle={{ padding: isMobile ? 16 : 24 }}>
+          {isMobile ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Input 
+                size="large" 
+                placeholder="描述你需要生成的表格..." 
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                onPressEnter={handleGenerate}
+              />
+              <Button 
+                type="primary" 
+                size="large" 
+                icon={<SendOutlined />} 
+                loading={loading}
+                onClick={handleGenerate}
+                block
+              >
+                生成
+              </Button>
+            </div>
+          ) : (
+            <Space.Compact style={{ width: '100%' }}>
+              <Input 
+                size="large" 
+                placeholder="描述你需要生成的表格，例如：生成一份1月份的公司日常报销明细表..." 
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                onPressEnter={handleGenerate}
+              />
+              <Button 
+                type="primary" 
+                size="large" 
+                icon={<SendOutlined />} 
+                loading={loading}
+                onClick={handleGenerate}
+              >
+                生成
+              </Button>
+            </Space.Compact>
+          )}
         </Card>
 
         <Card className="glass-panel" bordered={false} bodyStyle={{ padding: 0 }}>
@@ -73,7 +99,7 @@ const ExcelGenerator = () => {
                   <TableOutlined />
                   <Text strong>生成结果预览</Text>
                 </Space>
-                <Button type="primary" icon={<DownloadOutlined />} ghost>
+                <Button type="primary" icon={<DownloadOutlined />} ghost size={isMobile ? 'small' : 'middle'}>
                   导出 .xlsx
                 </Button>
               </div>
@@ -82,13 +108,14 @@ const ExcelGenerator = () => {
                 dataSource={data} 
                 pagination={false} 
                 style={{ background: 'transparent' }}
+                scroll={{ x: true }}
               />
             </div>
           ) : (
             <Empty 
               image={Empty.PRESENTED_IMAGE_SIMPLE} 
               description="暂无数据，请在上方输入描述生成表格"
-              style={{ padding: 48 }}
+              style={{ padding: isMobile ? 24 : 48 }}
             />
           )}
         </Card>
