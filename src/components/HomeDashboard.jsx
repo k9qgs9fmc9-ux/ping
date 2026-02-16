@@ -14,14 +14,15 @@ import {
 } from '@ant-design/icons';
 import { useSettings } from '../context/SettingsContext';
 import { THEME_COLORS } from '../config/themes';
+import { isModuleAvailable } from '../config/versions';
 
 const { Title, Text } = Typography;
 
 const HomeDashboard = ({ onModuleChange }) => {
-  const { currentTheme } = useSettings();
+  const { currentTheme, version } = useSettings();
   const themeColors = THEME_COLORS[currentTheme];
 
-  const modules = [
+  const allModules = [
     {
       key: 'chat',
       title: '智能对话',
@@ -86,6 +87,9 @@ const HomeDashboard = ({ onModuleChange }) => {
       stats: '智能记账',
     },
   ];
+
+  // 根据版本过滤模块
+  const modules = allModules.filter(module => isModuleAvailable(version, module.key));
 
   const ModuleCard = ({ module }) => (
     <div

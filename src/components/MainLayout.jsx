@@ -379,6 +379,35 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
         flexDirection: 'column',
         gap: 8
       }}>
+        {!accessKey && (
+          collapsed ? (
+            <Tooltip title="输入访问密钥以解锁更多功能" placement="right">
+              <Button
+                type="text"
+                icon={<LockOutlined />}
+                onClick={onOpenAccessKeyModal}
+                style={{
+                  color: themeColors?.textSecondary || 'inherit',
+                  width: 40,
+                  height: 40,
+                  fontSize: '16px'
+                }}
+              />
+            </Tooltip>
+          ) : (
+            <Button
+              type="primary"
+              icon={<LockOutlined />}
+              onClick={onOpenAccessKeyModal}
+              block
+              style={{
+                marginBottom: 8
+              }}
+            >
+              输入密钥
+            </Button>
+          )
+        )}
         {collapsed ? (
           <>
             <Tooltip title="切换主题" placement="right">
