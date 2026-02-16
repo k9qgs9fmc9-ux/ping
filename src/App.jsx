@@ -6,6 +6,7 @@ import PPTGenerator from './components/PPTGenerator';
 import ExcelGenerator from './components/ExcelGenerator';
 import FileAnalyzer from './components/FileAnalyzer';
 import VideoGenerator from './components/VideoGenerator';
+import StockAnalyzer from './components/StockAnalyzer';
 import './App.css';
 import TechBackground from './components/TechBackground';
 import { SettingsProvider } from './context/SettingsContext';
@@ -26,6 +27,8 @@ function App() {
         return <FileAnalyzer />;
       case 'video':
         return <VideoGenerator />;
+      case 'stock':
+        return <StockAnalyzer />;
       default:
         return <Chat />;
     }

@@ -10,7 +10,8 @@ import {
   AppstoreOutlined,
   VideoCameraOutlined,
   SettingOutlined,
-  HomeOutlined
+  HomeOutlined,
+  LineChartOutlined
 } from '@ant-design/icons';
 import { useSettings } from '../context/SettingsContext';
 
@@ -58,6 +59,11 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
       key: 'video',
       icon: <VideoCameraOutlined style={{ fontSize: '18px' }} />,
       label: '视频生成',
+    },
+    {
+      key: 'stock',
+      icon: <LineChartOutlined style={{ fontSize: '18px' }} />,
+      label: '股票分析',
     },
   ];
 

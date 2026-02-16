@@ -56,47 +56,57 @@ export const sendChatRequest = async ({ messages, apiKey, baseUrl }) => {
  * @param {String} [params.apiKey]
  */
 export const submitVideoTask = async ({ prompt, apiKey }) => {
-  // 1. Direct Mode
-  if (apiKey) {
-    // DashScope Video API currently does not support OpenAI SDK, using axios
-    // Warning: Likely to fail CORS
-    try {
-      const response = await axios.post(
-        'https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis',
-        {
-          model: 'wan2.6-t2v',
-          input: { prompt },
-          parameters: { size: '1280*720' }
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'X-DashScope-Async': 'enable',
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      return response.data;
-    } catch (error) {
-      if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
-        throw new Error(`暂不支持该服务！！！`)
-        // throw new Error(`网络请求失败 (CORS)。阿里云视频生成 API 不支持浏览器直接跨域访问。纯前端模式下暂无法直接生成视频，除非使用自定义代理。`);
-      }
-      throw error;
+  // 1. Try Proxy Mode first (Recommended to avoid CORS)
+  try {
+    const apiBase = '/api/video/generation';
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`;
     }
-  }
 
-  // 2. Proxy Mode
-  const apiBase = '/api/video/generation';
-  const response = await axios.post(
-    apiBase,
-    {
-      model: 'wan2.6-t2v',
-      input: { prompt },
-      parameters: { size: '1280*720' }
+    const response = await axios.post(
+      apiBase,
+      {
+        model: 'wan2.6-t2v',
+        input: { prompt },
+        parameters: { size: '1280*720' }
+      },
+      { headers }
+    );
+    return response.data;
+  } catch (proxyError) {
+    // If Proxy fails (e.g. 404 Not Found -> No Backend), fallback to Direct Mode
+    // Only if apiKey is provided
+    if (apiKey && (proxyError.response?.status === 404 || proxyError.code === 'ERR_NETWORK')) {
+      console.warn('Proxy mode failed, falling back to direct mode:', proxyError.message);
+      try {
+        const response = await axios.post(
+          'https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis',
+          {
+            model: 'wan2.6-t2v',
+            input: { prompt },
+            parameters: { size: '1280*720' }
+          },
+          {
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'X-DashScope-Async': 'enable',
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        return response.data;
+      } catch (directError) {
+        if (directError.code === 'ERR_NETWORK' || directError.message.includes('Network Error')) {
+           throw new Error(`网络请求失败 (CORS)。阿里云视频生成 API 不支持浏览器直接跨域访问。请确保本地开启了后端服务 (node server/index.js) 或配置了正确的代理。`);
+        }
+        throw directError;
+      }
     }
-  );
-  return response.data;
+    throw proxyError;
+  }
 };
 
 /**
@@ -105,21 +115,30 @@ export const submitVideoTask = async ({ prompt, apiKey }) => {
  * @param {String} [apiKey]
  */
 export const checkVideoTask = async (taskId, apiKey) => {
-  if (apiKey) {
-    try {
-      const response = await axios.get(
-        `https://dashscope.aliyuncs.com/api/v1/tasks/${taskId}`,
-        {
-          headers: { 'Authorization': `Bearer ${apiKey}` }
-        }
-      );
-      return response.data;
-    } catch (error) {
-      throw error;
+  // 1. Try Proxy Mode first
+  try {
+    const apiBase = `/api/video/tasks/${taskId}`;
+    const headers = {};
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`;
     }
+    const response = await axios.get(apiBase, { headers });
+    return response.data;
+  } catch (proxyError) {
+    // 2. Fallback to Direct Mode if Proxy is unavailable
+    if (apiKey && (proxyError.response?.status === 404 || proxyError.code === 'ERR_NETWORK')) {
+      try {
+        const response = await axios.get(
+          `https://dashscope.aliyuncs.com/api/v1/tasks/${taskId}`,
+          {
+            headers: { 'Authorization': `Bearer ${apiKey}` }
+          }
+        );
+        return response.data;
+      } catch (directError) {
+        throw directError;
+      }
+    }
+    throw proxyError;
   }
-
-  const apiBase = `/api/video/tasks/${taskId}`;
-  const response = await axios.get(apiBase);
-  return response.data;
 };
