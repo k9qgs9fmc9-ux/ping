@@ -1,32 +1,18 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Card, Typography, Button, Input, Space, message } from 'antd';
-import { LineChartOutlined, FullscreenOutlined, FullscreenExitOutlined, SafetyOutlined, LockOutlined } from '@ant-design/icons';
+import React, { useRef, useEffect, useState } from 'react';
+import { Card, Typography, Button, Space, message, Alert } from 'antd';
+import { LineChartOutlined, FullscreenOutlined, FullscreenExitOutlined } from '@ant-design/icons';
+import { useSettings } from '../context/SettingsContext';
+import { ACCESS_KEYS } from '../config/versions';
 
 const { Title, Text } = Typography;
 
 const StockAnalyzer = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [inputKey, setInputKey] = useState('');
   const containerRef = useRef(null);
+  const { accessKey } = useSettings();
 
-  const CORRECT_KEY = 'ai666';
-
-  const handleVerify = () => {
-    if (inputKey === CORRECT_KEY) {
-      setIsAuthenticated(true);
-      message.success('验证成功！欢迎访问股票分析工具');
-    } else {
-      message.error('访问密钥错误，请重试');
-      setInputKey('');
-    }
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setInputKey('');
-    message.info('已退出登录');
-  };
+  // 检查是否有权限访问股票分析工具
+  const hasAccess = accessKey === ACCESS_KEYS.PRIVATE || accessKey === ACCESS_KEYS.CREATION;
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -49,8 +35,8 @@ const StockAnalyzer = () => {
     };
   }, []);
 
-  // 欢迎界面/验证界面
-  const renderWelcomeScreen = () => (
+  // 无权限界面
+  const renderNoAccess = () => (
     <div style={{ 
       height: '100%', 
       display: 'flex', 
@@ -60,57 +46,13 @@ const StockAnalyzer = () => {
       padding: '40px',
       textAlign: 'center'
     }}>
-      <div style={{ 
-        width: 80, 
-        height: 80, 
-        borderRadius: '50%', 
-        background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 24
-      }}>
-        <SafetyOutlined style={{ fontSize: 40, color: '#fff' }} />
-      </div>
-      
-      <Title level={3} style={{ marginBottom: 8 }}>
-        欢迎使用股票分析工具
-      </Title>
-      <Text type="secondary" style={{ marginBottom: 32, fontSize: 16 }}>
-        这是一个专业的股票数据分析平台，请输入访问密钥以继续
-      </Text>
-
-      <Card style={{ width: 360, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          <div>
-            <Text strong style={{ display: 'block', marginBottom: 8 }}>
-              <LockOutlined style={{ marginRight: 8 }} />
-              访问密钥
-            </Text>
-            <Input.Password
-              placeholder="请输入访问密钥"
-              value={inputKey}
-              onChange={(e) => setInputKey(e.target.value)}
-              onPressEnter={handleVerify}
-              size="large"
-              prefix={<LockOutlined />}
-            />
-          </div>
-          <Button 
-            type="primary" 
-            size="large" 
-            onClick={handleVerify}
-            block
-            style={{ height: 44 }}
-          >
-            验证并进入
-          </Button>
-        </Space>
-      </Card>
-
-      <Text type="secondary" style={{ marginTop: 24, fontSize: 12 }}>
-        提示：请联系管理员获取访问密钥
-      </Text>
+      <Alert
+        message="访问受限"
+        description="股票分析工具仅限私有版及以上用户使用。请输入访问密钥以解锁此功能。"
+        type="warning"
+        showIcon
+        style={{ marginBottom: 24, maxWidth: 500 }}
+      />
     </div>
   );
 
@@ -126,9 +68,6 @@ const StockAnalyzer = () => {
           <Text type="secondary">专业的股票数据分析工具</Text>
         </div>
         <Space>
-          <Button onClick={handleLogout}>
-            退出登录
-          </Button>
           <Button
             type="primary"
             icon={isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
@@ -173,7 +112,7 @@ const StockAnalyzer = () => {
 
   return (
     <div ref={containerRef} style={{ height: '100%', display: 'flex', flexDirection: 'column', background: isFullscreen ? '#fff' : 'transparent' }}>
-      {isAuthenticated ? renderMainContent() : renderWelcomeScreen()}
+      {hasAccess ? renderMainContent() : renderNoAccess()}
     </div>
   );
 };
