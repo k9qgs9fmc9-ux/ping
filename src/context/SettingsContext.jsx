@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { THEMES } from '../config/themes';
 import { LAYOUTS } from '../config/layouts';
+import { getVersionByKey, VERSIONS } from '../config/versions';
 
 const SettingsContext = createContext();
 
@@ -14,6 +15,8 @@ export const SettingsProvider = ({ children }) => {
   const [chatBaseUrl, setChatBaseUrl] = useState(localStorage.getItem('chat_base_url') || 'https://dashscope.aliyuncs.com/compatible-mode/v1');
   const [currentTheme, setCurrentTheme] = useState(localStorage.getItem('app_theme') || THEMES.DEFAULT);
   const [currentLayout, setCurrentLayout] = useState(localStorage.getItem('app_layout') || LAYOUTS.SIDEBAR);
+  const [accessKey, setAccessKey] = useState(localStorage.getItem('app_access_key') || '');
+  const [version, setVersion] = useState(getVersionByKey(localStorage.getItem('app_access_key')));
   
   // Persist settings
   useEffect(() => {
@@ -36,8 +39,25 @@ export const SettingsProvider = ({ children }) => {
     localStorage.setItem('app_layout', currentLayout);
   }, [currentLayout]);
 
+  useEffect(() => {
+    if (accessKey) {
+      localStorage.setItem('app_access_key', accessKey);
+    } else {
+      localStorage.removeItem('app_access_key');
+    }
+    setVersion(getVersionByKey(accessKey));
+  }, [accessKey]);
+
   const openSettings = () => setIsSettingsOpen(true);
   const closeSettings = () => setIsSettingsOpen(false);
+
+  const handleAccessKeySubmit = (key) => {
+    setAccessKey(key);
+  };
+
+  const handleClearAccessKey = () => {
+    setAccessKey('');
+  };
 
   return (
     <SettingsContext.Provider value={{
@@ -52,6 +72,10 @@ export const SettingsProvider = ({ children }) => {
       setCurrentTheme,
       currentLayout,
       setCurrentLayout,
+      accessKey,
+      handleAccessKeySubmit,
+      handleClearAccessKey,
+      version,
     }}>
       {children}
     </SettingsContext.Provider>

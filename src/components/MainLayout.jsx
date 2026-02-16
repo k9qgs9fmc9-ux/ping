@@ -12,22 +12,24 @@ import {
   VideoCameraOutlined,
   LayoutOutlined,
   AppstoreOutlined,
-  WalletOutlined
+  WalletOutlined,
+  LockOutlined
 } from '@ant-design/icons';
 import { useSettings } from '../context/SettingsContext';
 import ThemeSwitcher from './ThemeSwitcher';
 import LayoutSwitcher from './LayoutSwitcher';
 import { THEME_COLORS } from '../config/themes';
 import { LAYOUTS } from '../config/layouts';
+import { isModuleAvailable } from '../config/versions';
 
 const { Sider, Content, Header } = Layout;
 const { Text } = Typography;
 const { useBreakpoint } = Grid;
 
-const MainLayout = ({ activeModule, onModuleChange, children }) => {
+const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { currentTheme, currentLayout } = useSettings();
+  const { currentTheme, currentLayout, version, accessKey } = useSettings();
   const screens = useBreakpoint();
   const themeColors = THEME_COLORS[currentTheme];
   
@@ -39,7 +41,7 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
 
   const isMobile = !screens.md;
 
-  const menuItems = [
+  const allMenuItems = [
     {
       key: 'home',
       icon: <AppstoreOutlined style={{ fontSize: '18px' }} />,
@@ -81,6 +83,9 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
       label: '账单管理',
     },
   ];
+
+  // 根据版本过滤菜单项
+  const menuItems = allMenuItems.filter(item => isModuleAvailable(version, item.key));
 
   // 侧边栏布局
   const renderSidebarLayout = () => (
@@ -202,7 +207,17 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
           />
         </div>
 
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {!accessKey && (
+            <Tooltip title="输入访问密钥以解锁更多功能">
+              <Button 
+                type="text" 
+                icon={<LockOutlined />} 
+                onClick={onOpenAccessKeyModal}
+                style={{ fontSize: '16px' }}
+              />
+            </Tooltip>
+          )}
           <ThemeSwitcher />
           <LayoutSwitcher />
         </div>
@@ -249,7 +264,17 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
           </span>
         </div>
 
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {!accessKey && (
+            <Tooltip title="输入访问密钥以解锁更多功能">
+              <Button 
+                type="text" 
+                icon={<LockOutlined />} 
+                onClick={onOpenAccessKeyModal}
+                style={{ fontSize: '16px' }}
+              />
+            </Tooltip>
+          )}
           <ThemeSwitcher />
           <LayoutSwitcher />
         </div>
@@ -453,6 +478,16 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
         </div>
 
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          {!accessKey && (
+            <Tooltip title="输入访问密钥以解锁更多功能">
+              <Button 
+                type="text" 
+                icon={<LockOutlined />} 
+                onClick={onOpenAccessKeyModal}
+                style={{ fontSize: '18px', color: themeColors?.textSecondary }}
+              />
+            </Tooltip>
+          )}
           <div style={{
             padding: '6px 12px',
             background: `linear-gradient(135deg, ${themeColors?.primary}15 0%, transparent 100%)`,

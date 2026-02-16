@@ -13,12 +13,14 @@ import './App.css';
 import TechBackground from './components/TechBackground';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
 import GlobalSettingsModal from './components/GlobalSettingsModal';
+import AccessKeyModal from './components/AccessKeyModal';
 import { getAntTheme, THEME_COLORS } from './config/themes';
 import { LAYOUTS } from './config/layouts';
 
 function AppContent() {
   const [activeModule, setActiveModule] = useState('home');
-  const { currentTheme, currentLayout } = useSettings();
+  const [accessKeyModalOpen, setAccessKeyModalOpen] = useState(false);
+  const { currentTheme, currentLayout, handleAccessKeySubmit } = useSettings();
 
   const handleModuleChange = (key) => {
     setActiveModule(key);
@@ -70,10 +72,22 @@ function AppContent() {
         }}
       >
         <TechBackground theme={currentTheme} />
-        <MainLayout activeModule={activeModule} onModuleChange={setActiveModule}>
+        <MainLayout 
+          activeModule={activeModule} 
+          onModuleChange={setActiveModule}
+          onOpenAccessKeyModal={() => setAccessKeyModalOpen(true)}
+        >
           {renderContent()}
         </MainLayout>
         <GlobalSettingsModal />
+        <AccessKeyModal 
+          visible={accessKeyModalOpen} 
+          onClose={() => setAccessKeyModalOpen(false)}
+          onKeySubmit={(key) => {
+            handleAccessKeySubmit(key);
+            setAccessKeyModalOpen(false);
+          }}
+        />
       </div>
     </ConfigProvider>
   );
