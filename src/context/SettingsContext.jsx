@@ -1,4 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { THEMES } from '../config/themes';
+import { LAYOUTS } from '../config/layouts';
 
 const SettingsContext = createContext();
 
@@ -10,6 +12,8 @@ export const SettingsProvider = ({ children }) => {
   const [apiKey, setApiKey] = useState(localStorage.getItem('dashscope_api_key') || DEFAULT_API_KEY);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [chatBaseUrl, setChatBaseUrl] = useState(localStorage.getItem('chat_base_url') || 'https://dashscope.aliyuncs.com/compatible-mode/v1');
+  const [currentTheme, setCurrentTheme] = useState(localStorage.getItem('app_theme') || THEMES.DEFAULT);
+  const [currentLayout, setCurrentLayout] = useState(localStorage.getItem('app_layout') || LAYOUTS.SIDEBAR);
   
   // Persist settings
   useEffect(() => {
@@ -24,6 +28,14 @@ export const SettingsProvider = ({ children }) => {
     localStorage.setItem('chat_base_url', chatBaseUrl);
   }, [chatBaseUrl]);
 
+  useEffect(() => {
+    localStorage.setItem('app_theme', currentTheme);
+  }, [currentTheme]);
+
+  useEffect(() => {
+    localStorage.setItem('app_layout', currentLayout);
+  }, [currentLayout]);
+
   const openSettings = () => setIsSettingsOpen(true);
   const closeSettings = () => setIsSettingsOpen(false);
 
@@ -35,7 +47,11 @@ export const SettingsProvider = ({ children }) => {
       setChatBaseUrl,
       isSettingsOpen,
       openSettings,
-      closeSettings
+      closeSettings,
+      currentTheme,
+      setCurrentTheme,
+      currentLayout,
+      setCurrentLayout,
     }}>
       {children}
     </SettingsContext.Provider>

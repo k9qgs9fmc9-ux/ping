@@ -153,12 +153,15 @@ const StockAnalyzer = () => {
         }}
       >
         <iframe
-          src="http://localhost:5173"
+          src="https://k9qgs9fmc9-ux.github.io/ai-test"
           style={{
             width: '100%',
             height: '100%',
             border: 'none',
-            flex: 1
+            flex: 1,
+            minHeight: 600,
+            background: '#fff',
+            borderRadius: 8,
           }}
           title="股票分析工具"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

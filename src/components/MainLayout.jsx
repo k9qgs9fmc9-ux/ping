@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Avatar, Space, Typography, theme, Button, Tooltip, Drawer, Grid } from 'antd';
+import { Layout, Menu, Typography, Button, Tooltip, Drawer, Grid } from 'antd';
 import { 
   RobotOutlined, 
   FilePptOutlined, 
   FileExcelOutlined, 
   FileTextOutlined, 
   MenuUnfoldOutlined, 
-  MenuFoldOutlined,
-  AppstoreOutlined,
-  VideoCameraOutlined,
-  SettingOutlined,
   HomeOutlined,
-  LineChartOutlined
+  LineChartOutlined,
+  BgColorsOutlined,
+  VideoCameraOutlined,
+  LayoutOutlined,
+  AppstoreOutlined,
+  WalletOutlined
 } from '@ant-design/icons';
 import { useSettings } from '../context/SettingsContext';
+import ThemeSwitcher from './ThemeSwitcher';
+import LayoutSwitcher from './LayoutSwitcher';
+import { THEME_COLORS } from '../config/themes';
+import { LAYOUTS } from '../config/layouts';
 
 const { Sider, Content, Header } = Layout;
 const { Text } = Typography;
@@ -22,10 +27,10 @@ const { useBreakpoint } = Grid;
 const MainLayout = ({ activeModule, onModuleChange, children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { openSettings } = useSettings();
+  const { currentTheme, currentLayout } = useSettings();
   const screens = useBreakpoint();
+  const themeColors = THEME_COLORS[currentTheme];
   
-  // Initialize collapsed state based on screen size, but only on mount/resize
   useEffect(() => {
     if (screens.lg === false) {
       setCollapsed(true);
@@ -35,6 +40,11 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
   const isMobile = !screens.md;
 
   const menuItems = [
+    {
+      key: 'home',
+      icon: <AppstoreOutlined style={{ fontSize: '18px' }} />,
+      label: '首页',
+    },
     {
       key: 'chat',
       icon: <RobotOutlined style={{ fontSize: '18px' }} />,
@@ -65,9 +75,233 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
       icon: <LineChartOutlined style={{ fontSize: '18px' }} />,
       label: '股票分析',
     },
+    {
+      key: 'bill',
+      icon: <WalletOutlined style={{ fontSize: '18px' }} />,
+      label: '账单管理',
+    },
   ];
 
-  const MenuContent = () => (
+  // 侧边栏布局
+  const renderSidebarLayout = () => (
+    <Layout style={{ minHeight: '100vh', width: '100%', background: 'transparent' }}>
+      {!isMobile ? (
+        <Sider 
+          collapsible 
+          collapsed={collapsed} 
+          onCollapse={(value) => setCollapsed(value)}
+          theme="light"
+          width={240}
+          style={{
+            background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.4)',
+            backdropFilter: 'blur(20px)',
+            borderRight: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.3)'}`,
+            zIndex: 10,
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'sticky',
+            top: 0,
+            height: '100vh',
+          }}
+          trigger={null}
+        >
+          <SidebarContent />
+        </Sider>
+      ) : (
+        <Drawer
+          placement="left"
+          onClose={() => setMobileOpen(false)}
+          open={mobileOpen}
+          width={240}
+          bodyStyle={{ padding: 0, display: 'flex', flexDirection: 'column', background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.95)' }}
+          headerStyle={{ display: 'none' }}
+        >
+          <SidebarContent />
+        </Drawer>
+      )}
+
+      <Layout style={{ background: 'transparent' }}>
+        {isMobile && (
+          <Header style={{ 
+            padding: '0 16px', 
+            background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)', 
+            backdropFilter: 'blur(10px)',
+            borderBottom: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.3)'}`,
+            display: 'flex', 
+            alignItems: 'center',
+            position: 'sticky',
+            top: 0,
+            zIndex: 9,
+            height: 64
+          }}>
+            <Button 
+              type="text" 
+              icon={<MenuUnfoldOutlined />} 
+              onClick={() => setMobileOpen(true)}
+              style={{ fontSize: '16px', width: 64, height: 64, marginLeft: -16 }}
+            />
+            <span style={{ fontWeight: 'bold', fontSize: 18, color: themeColors?.textPrimary || '#1f1f1f' }}>
+              守望
+            </span>
+          </Header>
+        )}
+        <Content style={{ 
+          margin: isMobile ? '16px' : '24px 16px', 
+          padding: isMobile ? 12 : 24, 
+          background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)', 
+          backdropFilter: 'blur(10px)',
+          borderRadius: isMobile ? 16 : 24,
+          boxShadow: themeColors?.shadow || '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+          border: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.4)'}`,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 280
+        }}>
+          {children}
+        </Content>
+      </Layout>
+    </Layout>
+  );
+
+  // 顶部导航布局
+  const renderTopLayout = () => (
+    <Layout style={{ minHeight: '100vh', width: '100%', background: 'transparent' }}>
+      <Header style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
+        height: 64,
+        padding: '0 24px',
+        background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.85)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.3)'}`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 40 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <HomeOutlined style={{ fontSize: 24, color: themeColors?.primary }} />
+            <span style={{ fontWeight: 'bold', fontSize: 20, color: themeColors?.textPrimary }}>
+              守望
+            </span>
+          </div>
+          
+          <Menu
+            mode="horizontal"
+            selectedKeys={[activeModule]}
+            onClick={({ key }) => onModuleChange(key)}
+            items={menuItems}
+            style={{
+              background: 'transparent',
+              border: 0,
+              minWidth: 400,
+              lineHeight: '64px',
+            }}
+          />
+        </div>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <ThemeSwitcher />
+          <LayoutSwitcher />
+        </div>
+      </Header>
+
+      <Content style={{ 
+        margin: '24px', 
+        padding: 24, 
+        background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)', 
+        backdropFilter: 'blur(10px)',
+        borderRadius: 24,
+        boxShadow: themeColors?.shadow || '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+        border: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.4)'}`,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 280
+      }}>
+        {children}
+      </Content>
+    </Layout>
+  );
+
+  // 混合布局
+  const renderMixedLayout = () => (
+    <Layout style={{ minHeight: '100vh', width: '100%', background: 'transparent' }}>
+      <Header style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
+        height: 64,
+        padding: '0 24px',
+        background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.85)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.3)'}`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <HomeOutlined style={{ fontSize: 24, color: themeColors?.primary }} />
+          <span style={{ fontWeight: 'bold', fontSize: 20, color: themeColors?.textPrimary }}>
+            守望
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <ThemeSwitcher />
+          <LayoutSwitcher />
+        </div>
+      </Header>
+
+      <Layout style={{ background: 'transparent' }}>
+        <Sider
+          width={200}
+          style={{
+            background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.4)',
+            backdropFilter: 'blur(20px)',
+            borderRight: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.3)'}`,
+            position: 'sticky',
+            top: 64,
+            height: 'calc(100vh - 64px)',
+            zIndex: 9,
+          }}
+        >
+          <Menu
+            mode="inline"
+            selectedKeys={[activeModule]}
+            onClick={({ key }) => onModuleChange(key)}
+            items={menuItems}
+            style={{
+              background: 'transparent',
+              border: 0,
+              paddingTop: 16,
+            }}
+          />
+        </Sider>
+
+        <Content style={{ 
+          margin: '24px', 
+          padding: 24, 
+          background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)', 
+          backdropFilter: 'blur(10px)',
+          borderRadius: 24,
+          boxShadow: themeColors?.shadow || '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+          border: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.4)'}`,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 280
+        }}>
+          {children}
+        </Content>
+      </Layout>
+    </Layout>
+  );
+
+  // 侧边栏内容组件
+  const SidebarContent = () => (
     <>
       <div style={{ 
         height: 64, 
@@ -75,7 +309,8 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
         alignItems: 'center', 
         justifyContent: collapsed ? 'center' : 'flex-start',
         padding: collapsed ? 0 : '0 24px',
-        borderBottom: '1px solid rgba(0, 0, 0, 0.03)'
+        borderBottom: `1px solid ${themeColors?.border || 'rgba(0, 0, 0, 0.03)'}`,
+        background: themeColors?.bgContainer || 'transparent',
       }}>
         <div 
           onClick={() => !isMobile && setCollapsed(!collapsed)}
@@ -83,12 +318,12 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
             cursor: isMobile ? 'default' : 'pointer', 
             display: 'flex', 
             alignItems: 'center',
-            color: '#0062ff'
+            color: themeColors?.primary || '#0062ff'
           }}
         >
           <HomeOutlined style={{ fontSize: 24 }} />
           {(!collapsed || isMobile) && (
-            <span style={{ marginLeft: 12, fontWeight: 'bold', fontSize: 18, color: '#1f1f1f' }}>
+            <span style={{ marginLeft: 12, fontWeight: 'bold', fontSize: 18, color: themeColors?.textPrimary || '#1f1f1f' }}>
               守望
             </span>
           )}
@@ -113,110 +348,226 @@ const MainLayout = ({ activeModule, onModuleChange, children }) => {
       <div style={{ 
         padding: collapsed ? '12px 0' : '12px 16px', 
         display: 'flex', 
-        justifyContent: collapsed ? 'center' : 'flex-start',
-        borderTop: '1px solid rgba(0,0,0,0.03)'
+        justifyContent: 'center',
+        borderTop: `1px solid ${themeColors?.border || 'rgba(0,0,0,0.03)'}`,
+        background: themeColors?.bgContainer || 'transparent',
+        flexDirection: 'column',
+        gap: 8
       }}>
-        {/* <Tooltip title={(!collapsed || isMobile) ? "全局设置" : ""} placement="right">
-          <Button 
-            type="text" 
-            icon={<SettingOutlined style={{ fontSize: 18 }} />} 
-            onClick={() => {
-              openSettings();
-              if (isMobile) setMobileOpen(false);
-            }}
-            style={{ 
-              width: collapsed ? 40 : '100%', 
-              justifyContent: collapsed ? 'center' : 'flex-start',
-              color: 'rgba(0,0,0,0.45)'
-            }}
-          >
-            {(!collapsed || isMobile) && <span style={{ marginLeft: 8 }}>全局设置</span>}
-          </Button>
-        </Tooltip> */}
+        {collapsed ? (
+          <>
+            <Tooltip title="切换主题" placement="right">
+              <Button
+                type="text"
+                icon={<BgColorsOutlined />}
+                style={{
+                  color: themeColors?.textSecondary || 'inherit',
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            </Tooltip>
+            <Tooltip title="切换布局" placement="right">
+              <Button
+                type="text"
+                icon={<LayoutOutlined />}
+                style={{
+                  color: themeColors?.textSecondary || 'inherit',
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            </Tooltip>
+          </>
+        ) : (
+          <>
+            <ThemeSwitcher />
+            <LayoutSwitcher />
+          </>
+        )}
       </div>
     </>
   );
 
-  return (
-    <Layout style={{ minHeight: '100vh', width: '100%', background: 'transparent' }}>
-      {!isMobile ? (
-        <Sider 
-          collapsible 
-          collapsed={collapsed} 
-          onCollapse={(value) => setCollapsed(value)}
-          theme="light"
-          width={240}
-          style={{
-            background: 'rgba(255, 255, 255, 0.4)',
-            backdropFilter: 'blur(20px)',
-            borderRight: '1px solid rgba(255, 255, 255, 0.3)',
-            zIndex: 10,
-            display: 'flex',
-            flexDirection: 'column',
-            position: 'sticky',
-            top: 0,
-            height: '100vh',
-          }}
-          trigger={null}
-        >
-          <MenuContent />
-        </Sider>
-      ) : (
-        <Drawer
-          placement="left"
-          onClose={() => setMobileOpen(false)}
-          open={mobileOpen}
-          width={240}
-          bodyStyle={{ padding: 0, display: 'flex', flexDirection: 'column', background: 'rgba(255, 255, 255, 0.95)' }}
-          headerStyle={{ display: 'none' }}
-        >
-          <MenuContent />
-        </Drawer>
-      )}
-
-      <Layout style={{ background: 'transparent' }}>
-        {isMobile && (
-          <Header style={{ 
-            padding: '0 16px', 
-            background: 'rgba(255, 255, 255, 0.7)', 
-            backdropFilter: 'blur(10px)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
+  // 大气科幻布局
+  const renderSciFiLayout = () => (
+    <Layout style={{ 
+      minHeight: '100vh', 
+      width: '100%', 
+      background: 'transparent',
+      position: 'relative'
+    }}>
+      {/* 科幻感浮动顶栏 */}
+      <div style={{
+        position: 'fixed',
+        top: 20,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 100,
+        width: 'calc(100% - 80px)',
+        maxWidth: 1400,
+        height: 72,
+        background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.85)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: 16,
+        border: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.3)'}`,
+        boxShadow: `${themeColors?.shadow || '0 8px 32px rgba(0,0,0,0.1)'}, 0 0 0 1px rgba(255,255,255,0.1) inset`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 32px',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 48 }}>
+          <div style={{ 
             display: 'flex', 
-            alignItems: 'center',
-            position: 'sticky',
-            top: 0,
-            zIndex: 9,
-            height: 64
+            alignItems: 'center', 
+            gap: 12,
+            padding: '8px 16px',
+            background: `linear-gradient(135deg, ${themeColors?.primary}20 0%, ${themeColors?.primary}05 100%)`,
+            borderRadius: 12,
+            border: `1px solid ${themeColors?.primary}30`,
           }}>
-            <Button 
-              type="text" 
-              icon={<MenuUnfoldOutlined />} 
-              onClick={() => setMobileOpen(true)}
-              style={{ fontSize: '16px', width: 64, height: 64, marginLeft: -16 }}
-            />
-            <span style={{ fontWeight: 'bold', fontSize: 18, color: '#1f1f1f' }}>
+            <HomeOutlined style={{ fontSize: 24, color: themeColors?.primary }} />
+            <span style={{ 
+              fontWeight: 'bold', 
+              fontSize: 22, 
+              color: themeColors?.textPrimary,
+              letterSpacing: '2px'
+            }}>
               守望
             </span>
-          </Header>
-        )}
-        <Content style={{ 
-          margin: isMobile ? '16px' : '24px 16px', 
-          padding: isMobile ? 12 : 24, 
-          background: 'rgba(255, 255, 255, 0.7)', 
-          backdropFilter: 'blur(10px)',
-          borderRadius: isMobile ? 16 : 24,
-          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
-          border: '1px solid rgba(255, 255, 255, 0.4)',
+          </div>
+          
+          <Menu
+            mode="horizontal"
+            selectedKeys={[activeModule]}
+            onClick={({ key }) => onModuleChange(key)}
+            items={menuItems}
+            style={{
+              background: 'transparent',
+              border: 0,
+              lineHeight: '56px',
+              fontSize: '15px',
+            }}
+          />
+        </div>
+
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <div style={{
+            padding: '6px 12px',
+            background: `linear-gradient(135deg, ${themeColors?.primary}15 0%, transparent 100%)`,
+            borderRadius: 8,
+            border: `1px solid ${themeColors?.primary}20`,
+            fontSize: '12px',
+            color: themeColors?.textSecondary,
+          }}>
+            v2.0
+          </div>
+          <ThemeSwitcher />
+          <LayoutSwitcher />
+        </div>
+      </div>
+
+      {/* 主内容区 - 全宽沉浸式设计 */}
+      <Content style={{ 
+        marginTop: 112,
+        marginLeft: 40,
+        marginRight: 40,
+        marginBottom: 40,
+        minHeight: 'calc(100vh - 152px)',
+      }}>
+        {/* 装饰性边框容器 */}
+        <div style={{
+          position: 'relative',
+          height: '100%',
+          background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: 24,
+          border: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.4)'}`,
+          boxShadow: `${themeColors?.shadow || '0 8px 32px rgba(0,0,0,0.07)'}, 0 0 0 1px rgba(255,255,255,0.2) inset`,
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          minHeight: 280
         }}>
-          {children}
-        </Content>
-      </Layout>
+          {/* 角落装饰 */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: 60,
+            height: 60,
+            borderTop: `3px solid ${themeColors?.primary}`,
+            borderLeft: `3px solid ${themeColors?.primary}`,
+            borderTopLeftRadius: 24,
+          }} />
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: 60,
+            height: 60,
+            borderTop: `3px solid ${themeColors?.primary}`,
+            borderRight: `3px solid ${themeColors?.primary}`,
+            borderTopRightRadius: 24,
+          }} />
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: 60,
+            height: 60,
+            borderBottom: `3px solid ${themeColors?.primary}`,
+            borderLeft: `3px solid ${themeColors?.primary}`,
+            borderBottomLeftRadius: 24,
+          }} />
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            width: 60,
+            height: 60,
+            borderBottom: `3px solid ${themeColors?.primary}`,
+            borderRight: `3px solid ${themeColors?.primary}`,
+            borderBottomRightRadius: 24,
+          }} />
+          
+          {/* 内容 */}
+          <div style={{ 
+            padding: 40, 
+            flex: 1,
+            position: 'relative',
+            zIndex: 1,
+          }}>
+            {children}
+          </div>
+        </div>
+      </Content>
+
+      {/* 底部装饰线 */}
+      <div style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 3,
+        background: `linear-gradient(90deg, transparent 0%, ${themeColors?.primary} 50%, transparent 100%)`,
+        opacity: 0.5,
+      }} />
     </Layout>
   );
+
+  // 根据当前布局返回对应的布局
+  switch (currentLayout) {
+    case LAYOUTS.TOP:
+      return renderTopLayout();
+    case LAYOUTS.MIXED:
+      return renderMixedLayout();
+    case LAYOUTS.SCIFI:
+      return renderSciFiLayout();
+    case LAYOUTS.SIDEBAR:
+    default:
+      return renderSidebarLayout();
+  }
 };
 
 export default MainLayout;

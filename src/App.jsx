@@ -7,16 +7,32 @@ import ExcelGenerator from './components/ExcelGenerator';
 import FileAnalyzer from './components/FileAnalyzer';
 import VideoGenerator from './components/VideoGenerator';
 import StockAnalyzer from './components/StockAnalyzer';
+import HomeDashboard from './components/HomeDashboard';
+import BillManager from './components/BillManager';
 import './App.css';
 import TechBackground from './components/TechBackground';
-import { SettingsProvider } from './context/SettingsContext';
+import { SettingsProvider, useSettings } from './context/SettingsContext';
 import GlobalSettingsModal from './components/GlobalSettingsModal';
+import { getAntTheme, THEME_COLORS } from './config/themes';
+import { LAYOUTS } from './config/layouts';
 
-function App() {
-  const [activeModule, setActiveModule] = useState('chat');
+function AppContent() {
+  const [activeModule, setActiveModule] = useState('home');
+  const { currentTheme, currentLayout } = useSettings();
+
+  const handleModuleChange = (key) => {
+    setActiveModule(key);
+  };
 
   const renderContent = () => {
+    // 大气科幻布局默认显示首页仪表板
+    if (currentLayout === LAYOUTS.SCIFI && activeModule === 'home') {
+      return <HomeDashboard onModuleChange={handleModuleChange} />;
+    }
+    
     switch (activeModule) {
+      case 'home':
+        return <HomeDashboard onModuleChange={handleModuleChange} />;
       case 'chat':
         return <Chat />;
       case 'ppt':
@@ -29,53 +45,44 @@ function App() {
         return <VideoGenerator />;
       case 'stock':
         return <StockAnalyzer />;
+      case 'bill':
+        return <BillManager />;
       default:
-        return <Chat />;
+        return <HomeDashboard onModuleChange={handleModuleChange} />;
     }
   };
 
+  const antTheme = getAntTheme(currentTheme);
+  const isDark = currentTheme !== 'grand';
+
   return (
-    <SettingsProvider>
-      <ConfigProvider
-        theme={{
-          algorithm: theme.defaultAlgorithm, // Switch to default (light) algorithm
-          token: {
-            colorPrimary: '#0062ff', // Tech Blue
-            colorBgContainer: 'rgba(255, 255, 255, 0.6)',
-            colorBorder: 'rgba(0, 98, 255, 0.15)',
-            colorText: '#1f1f1f',
-            fontFamily: "'JetBrains Mono', 'Fira Code', Inter, system-ui, sans-serif",
-            borderRadius: 12, // Slightly more rounded
-          },
-          components: {
-            Button: {
-              colorPrimary: '#0062ff',
-              algorithm: true, 
-              borderColorDisabled: 'rgba(0,0,0,0.05)',
-              defaultShadow: '0 2px 0 rgba(0, 98, 255, 0.1)',
-              primaryShadow: '0 2px 0 rgba(0, 98, 255, 0.1)',
-            },
-            Input: {
-              colorBgContainer: 'rgba(255, 255, 255, 0.6)',
-              activeBorderColor: '#0062ff',
-              hoverBorderColor: '#0062ff',
-              activeShadow: '0 0 0 2px rgba(0, 98, 255, 0.1)',
-            },
-            Modal: {
-              contentBg: '#ffffff',
-              headerBg: '#ffffff',
-            }
-          }
+    <ConfigProvider
+      theme={{
+        algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        ...antTheme,
+      }}
+    >
+      <div 
+        className="App"
+        style={{
+          background: THEME_COLORS[currentTheme]?.gradient || 'transparent',
+          minHeight: '100vh',
         }}
       >
-        <div className="App">
-          <TechBackground />
-          <MainLayout activeModule={activeModule} onModuleChange={setActiveModule}>
-            {renderContent()}
-          </MainLayout>
-          <GlobalSettingsModal />
-        </div>
-      </ConfigProvider>
+        <TechBackground theme={currentTheme} />
+        <MainLayout activeModule={activeModule} onModuleChange={setActiveModule}>
+          {renderContent()}
+        </MainLayout>
+        <GlobalSettingsModal />
+      </div>
+    </ConfigProvider>
+  );
+}
+
+function App() {
+  return (
+    <SettingsProvider>
+      <AppContent />
     </SettingsProvider>
   );
 }

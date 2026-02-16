@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ThinkingBubble from './components/ThinkingBubble';
 import { MODES, getModeConfig } from './data/modes';
 import { useSettings } from './context/SettingsContext';
+import { THEME_COLORS } from './config/themes';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
@@ -25,7 +26,8 @@ const MODE_ICONS = {
 
 const Chat = () => {
   const [inputValue, setInputValue] = useState('');
-  const { apiKey, chatBaseUrl, openSettings } = useSettings();
+  const { apiKey, chatBaseUrl, openSettings, currentTheme } = useSettings();
+  const themeColors = THEME_COLORS[currentTheme];
   
   const dispatch = useDispatch();
   const { messages, status, mode } = useSelector((state) => state.chat);
@@ -67,48 +69,54 @@ const Chat = () => {
       {
         key: MODES.GENERAL,
         label: (
-          <Space>
-            <CommentOutlined style={{ color: '#0062ff' }} /> 通用咨询
+          <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
+            <CommentOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <span style={{ fontWeight: 500 }}>通用咨询</span>
           </Space>
         ),
       },
       {
         key: MODES.PRODUCT,
         label: (
-          <Space>
-            <ShopOutlined style={{ color: '#0062ff' }} /> 产品专家
+          <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
+            <ShopOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <span style={{ fontWeight: 500 }}>产品专家</span>
           </Space>
         ),
       },
       {
         key: MODES.FINANCE,
         label: (
-          <Space>
-            <PayCircleOutlined style={{ color: '#0062ff' }} /> 财务金融专家
+          <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
+            <PayCircleOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <span style={{ fontWeight: 500 }}>财务金融专家</span>
           </Space>
         ),
       },
       {
         key: MODES.STOCK,
         label: (
-          <Space>
-            <RiseOutlined style={{ color: '#0062ff' }} /> 股票专家
+          <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
+            <RiseOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <span style={{ fontWeight: 500 }}>股票专家</span>
           </Space>
         ),
       },
       {
         key: MODES.DECORATION,
         label: (
-          <Space>
-            <HomeOutlined style={{ color: '#0062ff' }} /> 装修专家
+          <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
+            <HomeOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <span style={{ fontWeight: 500 }}>装修专家</span>
           </Space>
         ),
       },
       {
         key: MODES.PARENTING,
         label: (
-          <Space>
-            <HeartOutlined style={{ color: '#0062ff' }} /> 成都育儿嫂
+          <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
+            <HeartOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <span style={{ fontWeight: 500 }}>成都育儿嫂</span>
           </Space>
         ),
       }
@@ -138,37 +146,57 @@ const Chat = () => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        border: '1px solid rgba(255, 255, 255, 0.8)',
+        border: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.8)'}`,
+        background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
             width: isMobile ? '32px' : '40px',
             height: isMobile ? '32px' : '40px',
             borderRadius: '12px',
-            background: 'linear-gradient(135deg, #0062ff 0%, #722ed1 100%)',
+            background: `linear-gradient(135deg, ${themeColors?.primary} 0%, ${themeColors?.secondary || themeColors?.primary} 100%)`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 4px 10px rgba(0, 98, 255, 0.2)',
+            boxShadow: `0 4px 10px ${themeColors?.primary}33`,
             flexShrink: 0
           }}>
             <CurrentIcon style={{ fontSize: isMobile ? '18px' : '24px', color: '#fff' }} />
           </div>
           <div>
-            <Title level={4} style={{ margin: 0, color: '#1f1f1f', fontSize: isMobile ? '16px' : '20px' }}>
+            <Title level={4} style={{ margin: 0, color: themeColors?.textPrimary || '#1f1f1f', fontSize: isMobile ? '16px' : '20px' }}>
               天沐锦江VIP服务
             </Title>
             <Space size={4}>
-              <Dropdown menu={modeMenuProps} trigger={['click']}>
+              <Dropdown 
+                menu={modeMenuProps} 
+                trigger={['click']}
+                dropdownRender={(menu) => (
+                  <div style={{
+                    background: '#ffffff',
+                    borderRadius: '12px',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+                    border: `1px solid ${themeColors?.border || 'rgba(0,0,0,0.1)'}`,
+                    padding: '8px 0',
+                  }}>
+                    {menu}
+                  </div>
+                )}
+                overlayClassName="mode-dropdown-menu"
+              >
                 <Tag 
-                  color="blue" 
                   style={{ 
                     margin: 0, 
                     cursor: 'pointer', 
-                    background: 'rgba(0, 98, 255, 0.05)', 
-                    border: '1px solid rgba(0, 98, 255, 0.2)',
-                    color: '#0062ff',
-                    fontSize: isMobile ? '12px' : '14px'
+                    background: `${themeColors?.primary}15`, 
+                    border: `1px solid ${themeColors?.primary}40`,
+                    color: themeColors?.primary,
+                    fontSize: isMobile ? '12px' : '14px',
+                    padding: '4px 12px',
+                    borderRadius: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
                   }}
                 >
                   {currentConfig.name} <DownOutlined style={{ fontSize: '10px' }} />
@@ -207,7 +235,8 @@ const Chat = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: '20px',
-        border: '1px solid rgba(255, 255, 255, 0.8)',
+        border: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.8)'}`,
+        background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)',
       }}>
         {displayMessages.length === 0 ? (
           <div style={{ 
@@ -218,8 +247,8 @@ const Chat = () => {
             alignItems: 'center',
             opacity: 0.6 
           }}>
-            <HomeOutlined style={{ fontSize: isMobile ? '48px' : '64px', color: '#0062ff', marginBottom: '16px', opacity: 0.2 }} />
-            <Text style={{ color: 'var(--tech-text-dim)' }}>开始新的对话...</Text>
+            <HomeOutlined style={{ fontSize: isMobile ? '48px' : '64px', color: themeColors?.primary, marginBottom: '16px', opacity: 0.2 }} />
+            <Text style={{ color: themeColors?.textSecondary }}>开始新的对话...</Text>
           </div>
         ) : (
           <AnimatePresence>
@@ -257,7 +286,7 @@ const Chat = () => {
                     ? '1px solid rgba(114, 46, 209, 0.1)' 
                     : '1px solid rgba(0, 98, 255, 0.1)',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
-                  color: '#1f1f1f',
+                  color: themeColors?.textPrimary || '#1f1f1f',
                   backdropFilter: 'blur(5px)',
                 }}>
                   <div className="markdown-body" style={{ fontSize: isMobile ? '14px' : '15px', lineHeight: '1.6' }}>
@@ -290,9 +319,9 @@ const Chat = () => {
         display: 'flex',
         gap: isMobile ? '8px' : '12px',
         alignItems: 'flex-end',
-        background: 'rgba(255, 255, 255, 0.8)',
-        border: '1px solid rgba(255, 255, 255, 0.8)',
-        boxShadow: '0 0 20px rgba(0, 98, 255, 0.05)'
+        background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.8)',
+        border: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.8)'}`,
+        boxShadow: `0 0 20px ${themeColors?.primary}0D`
       }}>
         <TextArea
           value={inputValue}
@@ -311,7 +340,7 @@ const Chat = () => {
             background: 'transparent',
             padding: isMobile ? '8px' : '12px',
             fontSize: isMobile ? '14px' : '16px',
-            color: '#1f1f1f'
+            color: themeColors?.textPrimary || '#1f1f1f'
           }}
         />
         <Button 
@@ -324,14 +353,39 @@ const Chat = () => {
           style={{ 
             marginBottom: '4px', 
             marginRight: '4px',
-            background: 'linear-gradient(135deg, #0062ff 0%, #00b96b 100%)',
+            background: `linear-gradient(135deg, ${themeColors?.primary} 0%, ${themeColors?.secondary || themeColors?.primary} 100%)`,
             border: 'none',
-            boxShadow: '0 4px 10px rgba(0, 98, 255, 0.2)'
+            boxShadow: `0 4px 10px ${themeColors?.primary}33`
           }}
         />
       </div>
 
       {/* Settings Modal - Moved to GlobalSettingsModal */}
+      
+      {/* 下拉菜单样式覆盖 */}
+      <style>{`
+        .mode-dropdown-menu .ant-dropdown-menu {
+          background: #ffffff !important;
+          border-radius: 12px !important;
+          box-shadow: none !important;
+          border: none !important;
+          padding: 0 !important;
+        }
+        .mode-dropdown-menu .ant-dropdown-menu-item {
+          padding: 12px 20px !important;
+          color: #1f1f1f !important;
+          font-size: 14px !important;
+          transition: all 0.2s ease;
+          background: transparent !important;
+        }
+        .mode-dropdown-menu .ant-dropdown-menu-item:hover {
+          background: #f0f0f0 !important;
+        }
+        .mode-dropdown-menu .ant-space,
+        .mode-dropdown-menu .ant-space-item {
+          color: #1f1f1f !important;
+        }
+      `}</style>
     </div>
   );
 };
