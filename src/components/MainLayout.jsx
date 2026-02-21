@@ -13,11 +13,13 @@ import {
   LayoutOutlined,
   AppstoreOutlined,
   WalletOutlined,
-  LockOutlined
+  LockOutlined,
+  CompassOutlined
 } from '@ant-design/icons';
 import { useSettings } from '../context/SettingsContext';
 import ThemeSwitcher from './ThemeSwitcher';
 import LayoutSwitcher from './LayoutSwitcher';
+import VersionBadge from './VersionBadge';
 import { THEME_COLORS } from '../config/themes';
 import { LAYOUTS } from '../config/layouts';
 import { isModuleAvailable } from '../config/versions';
@@ -82,9 +84,13 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
       icon: <WalletOutlined style={{ fontSize: '18px' }} />,
       label: '账单管理',
     },
+    {
+      key: 'destiny',
+      icon: <CompassOutlined style={{ fontSize: '18px' }} />,
+      label: '国学命理',
+    },
   ];
 
-  // 根据版本过滤菜单项
   const menuItems = allMenuItems.filter(item => isModuleAvailable(version, item.key));
 
   // 侧边栏布局
@@ -437,6 +443,7 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
           <>
             <ThemeSwitcher />
             <LayoutSwitcher />
+            <VersionBadge />
           </>
         )}
       </div>

@@ -10,7 +10,8 @@ import {
   ArrowRightOutlined,
   ThunderboltFilled,
   StarFilled,
-  WalletOutlined
+  WalletOutlined,
+  CompassOutlined
 } from '@ant-design/icons';
 import { useSettings } from '../context/SettingsContext';
 import { THEME_COLORS } from '../config/themes';
@@ -86,9 +87,17 @@ const HomeDashboard = ({ onModuleChange }) => {
       badge: '新功能',
       stats: '智能记账',
     },
+    {
+      key: 'destiny',
+      title: '国学命理',
+      description: '传统智慧解读，八字命理分析',
+      icon: <CompassOutlined />,
+      color: '#722ed1',
+      badge: '创造版',
+      stats: '传统智慧',
+    },
   ];
 
-  // 根据版本过滤模块
   const modules = allModules.filter(module => isModuleAvailable(version, module.key));
 
   const ModuleCard = ({ module }) => (

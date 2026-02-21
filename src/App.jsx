@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ConfigProvider, theme } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { ConfigProvider, theme, message } from 'antd';
 import Chat from './Chat';
 import MainLayout from './components/MainLayout';
 import PPTGenerator from './components/PPTGenerator';
@@ -7,6 +7,7 @@ import ExcelGenerator from './components/ExcelGenerator';
 import FileAnalyzer from './components/FileAnalyzer';
 import VideoGenerator from './components/VideoGenerator';
 import StockAnalyzer from './components/StockAnalyzer';
+import DestinyAnalyzer from './components/DestinyAnalyzer';
 import HomeDashboard from './components/HomeDashboard';
 import BillManager from './components/BillManager';
 import './App.css';
@@ -16,18 +17,26 @@ import GlobalSettingsModal from './components/GlobalSettingsModal';
 import AccessKeyModal from './components/AccessKeyModal';
 import { getAntTheme, THEME_COLORS } from './config/themes';
 import { LAYOUTS } from './config/layouts';
+import { isModuleAvailable } from './config/versions';
 
 function AppContent() {
-  const [activeModule, setActiveModule] = useState('home');
+  const [activeModule, setActiveModule] = useState('chat');
   const [accessKeyModalOpen, setAccessKeyModalOpen] = useState(false);
-  const { currentTheme, currentLayout, handleAccessKeySubmit } = useSettings();
+  const { currentTheme, currentLayout, handleAccessKeySubmit, version } = useSettings();
+
+  // 检查模块权限
+  useEffect(() => {
+    if (!isModuleAvailable(version, activeModule)) {
+      message.warning('您没有权限访问此模块，请输入正确的访问密钥');
+      setActiveModule('chat');
+    }
+  }, [version, activeModule]);
 
   const handleModuleChange = (key) => {
     setActiveModule(key);
   };
 
   const renderContent = () => {
-    // 大气科幻布局默认显示首页仪表板
     if (currentLayout === LAYOUTS.SCIFI && activeModule === 'home') {
       return <HomeDashboard onModuleChange={handleModuleChange} />;
     }
@@ -49,13 +58,15 @@ function AppContent() {
         return <StockAnalyzer />;
       case 'bill':
         return <BillManager />;
+      case 'destiny':
+        return <DestinyAnalyzer />;
       default:
-        return <HomeDashboard onModuleChange={handleModuleChange} />;
+        return <Chat />;
     }
   };
 
   const antTheme = getAntTheme(currentTheme);
-  const isDark = currentTheme !== 'grand';
+  const isDark = currentTheme !== 'grand' && currentTheme !== 'default';
 
   return (
     <ConfigProvider
