@@ -190,9 +190,8 @@ const BillCharts = ({ transactions }) => {
               title="总收入"
               value={totalStats.income}
               precision={2}
-              prefix="¥"
               valueStyle={{ color: '#52c41a' }}
-              prefix={<ArrowUpOutlined style={{ marginRight: 8 }} />}
+              prefix={<><ArrowUpOutlined style={{ marginRight: 8 }} />¥</>}
             />
           </Card>
         </Col>
@@ -202,9 +201,8 @@ const BillCharts = ({ transactions }) => {
               title="总支出"
               value={totalStats.expense}
               precision={2}
-              prefix="¥"
               valueStyle={{ color: '#f5222d' }}
-              prefix={<ArrowDownOutlined style={{ marginRight: 8 }} />}
+              prefix={<><ArrowDownOutlined style={{ marginRight: 8 }} />¥</>}
             />
           </Card>
         </Col>
@@ -214,11 +212,10 @@ const BillCharts = ({ transactions }) => {
               title="结余"
               value={totalStats.balance}
               precision={2}
-              prefix="¥"
               valueStyle={{ 
                 color: totalStats.balance >= 0 ? '#52c41a' : '#f5222d' 
               }}
-              prefix={<WalletOutlined style={{ marginRight: 8 }} />}
+              prefix={<><WalletOutlined style={{ marginRight: 8 }} />¥</>}
             />
           </Card>
         </Col>
