@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Menu, Typography, Button, Tooltip, Drawer, Grid } from 'antd';
-import { 
-  RobotOutlined, 
-  FilePptOutlined, 
-  FileExcelOutlined, 
-  FileTextOutlined, 
-  MenuUnfoldOutlined, 
+import {
+  RobotOutlined,
+  FilePptOutlined,
+  FileExcelOutlined,
+  FileTextOutlined,
+  MenuUnfoldOutlined,
   HomeOutlined,
   LineChartOutlined,
   BgColorsOutlined,
@@ -14,7 +14,10 @@ import {
   AppstoreOutlined,
   WalletOutlined,
   LockOutlined,
-  CompassOutlined
+  CompassOutlined,
+  HeartOutlined,
+  ShopOutlined,
+  PayCircleOutlined
 } from '@ant-design/icons';
 import { useSettings } from '../context/SettingsContext';
 import ThemeSwitcher from './ThemeSwitcher';
@@ -25,7 +28,7 @@ import { LAYOUTS } from '../config/layouts';
 import { isModuleAvailable } from '../config/versions';
 
 const { Sider, Content, Header } = Layout;
-const { Text } = Typography;
+const { Text, Title } = Typography;
 const { useBreakpoint } = Grid;
 
 const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, children }) => {
@@ -93,61 +96,195 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
 
   const menuItems = allMenuItems.filter(item => isModuleAvailable(version, item.key));
 
+  // 天沐优质邻居广告组件
+  const renderNeighborAds = (mobile = false) => (
+    <div style={{
+      padding: '16px',
+      background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.6)',
+      borderRadius: '16px',
+      border: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.8)'}`,
+    }}>
+      <Title level={5} style={{
+        margin: '0 0 12px 0',
+        color: themeColors?.textPrimary || '#1f1f1f',
+        fontSize: mobile ? '16px' : '14px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
+      }}>
+        <span style={{
+          background: `linear-gradient(135deg, ${themeColors?.primary} 0%, ${themeColors?.secondary || themeColors?.primary} 100%)`,
+          color: '#fff',
+          padding: '3px 10px',
+          borderRadius: '12px',
+          fontSize: mobile ? '13px' : '12px',
+          fontWeight: 600
+        }}>优质服务</span>
+      </Title>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: mobile ? '1fr' : 'repeat(2, 1fr)',
+        gap: mobile ? '12px' : '10px',
+      }}>
+        {[
+          { id: '1105', name: '银新4-1105', description: '全屋定制设计', icon: HomeOutlined, color: '#722ed1' },
+          { id: '609', name: '头发乱了~中中', description: '瘦身达人', icon: HeartOutlined, color: '#fa541c' },
+          { id: '888', name: '美食推荐', description: '周边美食', icon: ShopOutlined, color: '#faad14' },
+          { id: '168', name: '理财顾问', description: '财富规划', icon: PayCircleOutlined, color: '#52c41a' },
+        ].map((item) => (
+          <div
+            key={item.id}
+            style={{
+              padding: mobile ? '12px' : '10px',
+              borderRadius: '12px',
+              background: 'rgba(255, 255, 255, 0.7)',
+              border: `1px solid ${item.color}30`,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: mobile ? 'row' : 'column',
+              alignItems: mobile ? 'center' : 'center',
+              gap: mobile ? '12px' : '6px',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.02)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+            onTouchStart={(e) => {
+              e.currentTarget.style.transform = 'scale(0.98)';
+              e.currentTarget.style.background = `${item.color}25`;
+            }}
+            onTouchEnd={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.7)';
+            }}
+          >
+            <div style={{
+              width: mobile ? '48px' : '36px',
+              height: mobile ? '48px' : '36px',
+              borderRadius: '12px',
+              background: `${item.color}15`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+              <item.icon style={{ fontSize: mobile ? '24px' : '18px', color: item.color }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{
+                fontSize: mobile ? '15px' : '13px',
+                color: themeColors?.textPrimary || '#1f1f1f',
+                textAlign: mobile ? 'left' : 'center',
+                fontWeight: 600,
+                lineHeight: '1.3',
+                display: 'block',
+                marginBottom: mobile ? '2px' : '0',
+              }}>
+                {item.name}
+              </Text>
+              {!mobile && (
+                <Text style={{
+                  fontSize: '11px',
+                  color: themeColors?.textSecondary || '#666',
+                  textAlign: 'center',
+                  fontWeight: 400,
+                  display: 'block',
+                }}>
+                  领域：{item.description}
+                </Text>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   // 侧边栏布局
   const renderSidebarLayout = () => (
     <Layout style={{ minHeight: '100vh', width: '100%', background: 'transparent' }}>
       {!isMobile ? (
-        <Sider 
-          collapsible 
-          collapsed={collapsed} 
-          onCollapse={(value) => setCollapsed(value)}
-          theme="light"
-          width={240}
-          style={{
-            background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.4)',
-            backdropFilter: 'blur(20px)',
-            borderRight: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.3)'}`,
-            zIndex: 10,
-            display: 'flex',
-            flexDirection: 'column',
-            position: 'sticky',
-            top: 0,
-            height: '100vh',
-          }}
-          trigger={null}
-        >
-          <SidebarContent />
-        </Sider>
+        <>
+          <Sider
+            collapsible
+            collapsed={collapsed}
+            onCollapse={(value) => setCollapsed(value)}
+            theme="light"
+            width={240}
+            style={{
+              background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.4)',
+              backdropFilter: 'blur(20px)',
+              borderRight: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.3)'}`,
+              zIndex: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'sticky',
+              top: 0,
+              height: '100vh',
+            }}
+            trigger={null}
+          >
+            <SidebarContent />
+          </Sider>
+          {/* 右侧广告边栏 */}
+          <Sider
+            width={320}
+            theme="light"
+            style={{
+              background: 'transparent',
+              borderLeft: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.3)'}`,
+              zIndex: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'sticky',
+              top: 0,
+              height: '100vh',
+              overflowY: 'auto',
+            }}
+          >
+            <div style={{ padding: '16px' }}>
+              {renderNeighborAds()}
+            </div>
+          </Sider>
+        </>
       ) : (
         <Drawer
           placement="left"
           onClose={() => setMobileOpen(false)}
           open={mobileOpen}
-          width={240}
+          width="85%"
           bodyStyle={{ padding: 0, display: 'flex', flexDirection: 'column', background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.95)' }}
           headerStyle={{ display: 'none' }}
         >
+          <div style={{ padding: '16px' }}>
+            {renderNeighborAds(true)}
+          </div>
           <SidebarContent />
         </Drawer>
       )}
 
       <Layout style={{ background: 'transparent' }}>
         {isMobile && (
-          <Header style={{ 
-            padding: '0 16px', 
-            background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)', 
+          <Header style={{
+            padding: '0 16px',
+            background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)',
             backdropFilter: 'blur(10px)',
             borderBottom: `1px solid ${themeColors?.border || 'rgba(255, 255, 255, 0.3)'}`,
-            display: 'flex', 
+            display: 'flex',
             alignItems: 'center',
             position: 'sticky',
             top: 0,
             zIndex: 9,
             height: 64
           }}>
-            <Button 
-              type="text" 
-              icon={<MenuUnfoldOutlined />} 
+            <Button
+              type="text"
+              icon={<MenuUnfoldOutlined />}
               onClick={() => setMobileOpen(true)}
               style={{ fontSize: '16px', width: 64, height: 64, marginLeft: -16 }}
             />
@@ -156,10 +293,10 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
             </span>
           </Header>
         )}
-        <Content style={{ 
-          margin: isMobile ? '16px' : '24px 16px', 
-          padding: isMobile ? 12 : 24, 
-          background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)', 
+        <Content style={{
+          margin: isMobile ? '16px' : '16px 0',
+          padding: isMobile ? 12 : 24,
+          background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)',
           backdropFilter: 'blur(10px)',
           borderRadius: isMobile ? 16 : 24,
           boxShadow: themeColors?.shadow || '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
@@ -334,20 +471,20 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
   // 侧边栏内容组件
   const SidebarContent = () => (
     <>
-      <div style={{ 
-        height: 64, 
-        display: 'flex', 
-        alignItems: 'center', 
+      <div style={{
+        height: 64,
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: collapsed ? 'center' : 'flex-start',
         padding: collapsed ? 0 : '0 24px',
         borderBottom: `1px solid ${themeColors?.border || 'rgba(0, 0, 0, 0.03)'}`,
         background: themeColors?.bgContainer || 'transparent',
       }}>
-        <div 
+        <div
           onClick={() => !isMobile && setCollapsed(!collapsed)}
-          style={{ 
-            cursor: isMobile ? 'default' : 'pointer', 
-            display: 'flex', 
+          style={{
+            cursor: isMobile ? 'default' : 'pointer',
+            display: 'flex',
             alignItems: 'center',
             color: themeColors?.primary || '#0062ff'
           }}
@@ -360,7 +497,14 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
           )}
         </div>
       </div>
-      
+
+      {/* 移动端显示优质服务广告 */}
+      {isMobile && (
+        <div style={{ padding: '16px' }}>
+          {renderNeighborAds(true)}
+        </div>
+      )}
+
       <Menu
         mode="inline"
         selectedKeys={[activeModule]}
@@ -376,15 +520,17 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
         }}
       />
 
-      <div style={{ 
-        padding: collapsed ? '12px 0' : '12px 16px', 
-        display: 'flex', 
-        justifyContent: 'center',
-        borderTop: `1px solid ${themeColors?.border || 'rgba(0,0,0,0.03)'}`,
-        background: themeColors?.bgContainer || 'transparent',
-        flexDirection: 'column',
-        gap: 8
-      }}>
+      {/* 移动端不显示底部按钮区（已有广告和菜单） */}
+      {!isMobile && (
+        <div style={{
+          padding: collapsed ? '12px 0' : '12px 16px',
+          display: 'flex',
+          justifyContent: 'center',
+          borderTop: `1px solid ${themeColors?.border || 'rgba(0,0,0,0.03)'}`,
+          background: themeColors?.bgContainer || 'transparent',
+          flexDirection: 'column',
+          gap: 8
+        }}>
         {!accessKey && (
           collapsed ? (
             <Tooltip title="输入访问密钥以解锁更多功能" placement="right">
@@ -447,6 +593,7 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
           </>
         )}
       </div>
+      )}
     </>
   );
 

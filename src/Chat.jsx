@@ -28,14 +28,14 @@ const Chat = () => {
   const [inputValue, setInputValue] = useState('');
   const { apiKey, chatBaseUrl, openSettings, currentTheme } = useSettings();
   const themeColors = THEME_COLORS[currentTheme];
-  
+
   const dispatch = useDispatch();
   const { messages, status, mode } = useSelector((state) => state.chat);
   const messagesEndRef = useRef(null);
-  
+
   const screens = useBreakpoint();
   const isMobile = !screens.md;
-  
+
   const currentConfig = getModeConfig(mode);
   const CurrentIcon = MODE_ICONS[mode] || CommentOutlined;
 
@@ -59,7 +59,7 @@ const Chat = () => {
   const handleClear = () => {
     dispatch(clearHistory());
   };
-  
+
   const handleModeChange = ({ key }) => {
     dispatch(switchMode(key));
   };
@@ -70,7 +70,7 @@ const Chat = () => {
         key: MODES.GENERAL,
         label: (
           <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
-            <CommentOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <CommentOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} />
             <span style={{ fontWeight: 500 }}>通用咨询</span>
           </Space>
         ),
@@ -79,7 +79,7 @@ const Chat = () => {
         key: MODES.PRODUCT,
         label: (
           <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
-            <ShopOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <ShopOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} />
             <span style={{ fontWeight: 500 }}>产品专家</span>
           </Space>
         ),
@@ -88,7 +88,7 @@ const Chat = () => {
         key: MODES.FINANCE,
         label: (
           <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
-            <PayCircleOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <PayCircleOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} />
             <span style={{ fontWeight: 500 }}>财务金融专家</span>
           </Space>
         ),
@@ -97,7 +97,7 @@ const Chat = () => {
         key: MODES.STOCK,
         label: (
           <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
-            <RiseOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <RiseOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} />
             <span style={{ fontWeight: 500 }}>股票专家</span>
           </Space>
         ),
@@ -106,7 +106,7 @@ const Chat = () => {
         key: MODES.DECORATION,
         label: (
           <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
-            <HomeOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <HomeOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} />
             <span style={{ fontWeight: 500 }}>装修专家</span>
           </Space>
         ),
@@ -115,7 +115,7 @@ const Chat = () => {
         key: MODES.PARENTING,
         label: (
           <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
-            <HeartOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} /> 
+            <HeartOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} />
             <span style={{ fontWeight: 500 }}>成都育儿嫂</span>
           </Space>
         ),
@@ -165,11 +165,11 @@ const Chat = () => {
           </div>
           <div>
             <Title level={4} style={{ margin: 0, color: themeColors?.textPrimary || '#1f1f1f', fontSize: isMobile ? '16px' : '20px' }}>
-              天沐锦江VIP服务
+              天沐锦江 VIP 服务
             </Title>
             <Space size={4}>
-              <Dropdown 
-                menu={modeMenuProps} 
+              <Dropdown
+                menu={modeMenuProps}
                 trigger={['click']}
                 dropdownRender={(menu) => (
                   <div style={{
@@ -184,11 +184,11 @@ const Chat = () => {
                 )}
                 overlayClassName="mode-dropdown-menu"
               >
-                <Tag 
-                  style={{ 
-                    margin: 0, 
-                    cursor: 'pointer', 
-                    background: `${themeColors?.primary}15`, 
+                <Tag
+                  style={{
+                    margin: 0,
+                    cursor: 'pointer',
+                    background: `${themeColors?.primary}15`,
                     border: `1px solid ${themeColors?.primary}40`,
                     color: themeColors?.primary,
                     fontSize: isMobile ? '12px' : '14px',
@@ -207,21 +207,13 @@ const Chat = () => {
         </div>
         <Space size={isMobile ? 0 : 8}>
           <Tooltip title="清空对话">
-            <Button 
-              icon={<DeleteOutlined />} 
-              onClick={handleClear} 
-              type="text" 
-              style={{ color: 'var(--tech-text-dim)' }}
-            />
-          </Tooltip>
-          {/* <Tooltip title="设置 API Key">
-            <Button 
-              icon={<SettingOutlined />} 
-              onClick={openSettings} 
+            <Button
+              icon={<DeleteOutlined />}
+              onClick={handleClear}
               type="text"
               style={{ color: 'var(--tech-text-dim)' }}
             />
-          </Tooltip> */}
+          </Tooltip>
         </Space>
       </div>
 
@@ -239,13 +231,13 @@ const Chat = () => {
         background: themeColors?.bgContainer || 'rgba(255, 255, 255, 0.7)',
       }}>
         {displayMessages.length === 0 ? (
-          <div style={{ 
-            height: '100%', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            justifyContent: 'center', 
+          <div style={{
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
             alignItems: 'center',
-            opacity: 0.6 
+            opacity: 0.6
           }}>
             <HomeOutlined style={{ fontSize: isMobile ? '48px' : '64px', color: themeColors?.primary, marginBottom: '16px', opacity: 0.2 }} />
             <Text style={{ color: themeColors?.textSecondary }}>开始新的对话...</Text>
@@ -266,24 +258,24 @@ const Chat = () => {
                   flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
                 }}
               >
-                <Avatar 
-                  icon={msg.role === 'user' ? <UserOutlined /> : <RobotOutlined />} 
-                  style={{ 
+                <Avatar
+                  icon={msg.role === 'user' ? <UserOutlined /> : <RobotOutlined />}
+                  style={{
                     backgroundColor: msg.role === 'user' ? '#722ed1' : '#0062ff',
                     boxShadow: msg.role === 'user' ? '0 2px 8px rgba(114, 46, 209, 0.2)' : '0 2px 8px rgba(0, 98, 255, 0.2)',
                     flexShrink: 0,
                     width: isMobile ? 32 : 32,
                     height: isMobile ? 32 : 32
-                  }} 
+                  }}
                 />
                 <div style={{
                   padding: isMobile ? '8px 12px' : '12px 16px',
                   borderRadius: msg.role === 'user' ? '20px 4px 20px 20px' : '4px 20px 20px 20px',
-                  background: msg.role === 'user' 
-                    ? 'linear-gradient(135deg, rgba(114, 46, 209, 0.05) 0%, rgba(114, 46, 209, 0.1) 100%)' 
+                  background: msg.role === 'user'
+                    ? 'linear-gradient(135deg, rgba(114, 46, 209, 0.05) 0%, rgba(114, 46, 209, 0.1) 100%)'
                     : 'rgba(255, 255, 255, 0.8)',
-                  border: msg.role === 'user' 
-                    ? '1px solid rgba(114, 46, 209, 0.1)' 
+                  border: msg.role === 'user'
+                    ? '1px solid rgba(114, 46, 209, 0.1)'
                     : '1px solid rgba(0, 98, 255, 0.1)',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
                   color: themeColors?.textPrimary || '#1f1f1f',
@@ -299,7 +291,7 @@ const Chat = () => {
             ))}
           </AnimatePresence>
         )}
-        
+
         {status === 'loading' && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -334,24 +326,24 @@ const Chat = () => {
           }}
           placeholder="输入消息..."
           autoSize={{ minRows: 1, maxRows: 4 }}
-          style={{ 
-            resize: 'none', 
-            border: 'none', 
+          style={{
+            resize: 'none',
+            border: 'none',
             background: 'transparent',
             padding: isMobile ? '8px' : '12px',
             fontSize: isMobile ? '14px' : '16px',
             color: themeColors?.textPrimary || '#1f1f1f'
           }}
         />
-        <Button 
-          type="primary" 
-          shape="circle" 
-          icon={<SendOutlined />} 
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<SendOutlined />}
           size="large"
           onClick={handleSend}
           disabled={!inputValue.trim() || status === 'loading'}
-          style={{ 
-            marginBottom: '4px', 
+          style={{
+            marginBottom: '4px',
             marginRight: '4px',
             background: `linear-gradient(135deg, ${themeColors?.primary} 0%, ${themeColors?.secondary || themeColors?.primary} 100%)`,
             border: 'none',
@@ -361,7 +353,7 @@ const Chat = () => {
       </div>
 
       {/* Settings Modal - Moved to GlobalSettingsModal */}
-      
+
       {/* 下拉菜单样式覆盖 */}
       <style>{`
         .mode-dropdown-menu .ant-dropdown-menu {
