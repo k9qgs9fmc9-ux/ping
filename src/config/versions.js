@@ -27,7 +27,7 @@ export const VERSION_INFO = {
   [VERSIONS.CREATION]: {
     name: '创造版',
     description: '体验全部功能',
-    features: ['私有版所有功能', '账单管理', '国学命理', '优先技术支持'],
+    features: ['私有版所有功能', '账单管理', '国学命理', '人生轨迹视频', 'AI发型设计', '优先技术支持'],
   },
 };
 
@@ -47,7 +47,7 @@ export const getVersionByKey = (key) => {
 export const MODULE_PERMISSIONS = {
   [VERSIONS.PUBLIC]: ['home', 'chat', 'ppt', 'excel', 'file'],
   [VERSIONS.PRIVATE]: ['home', 'chat', 'ppt', 'excel', 'file', 'video', 'stock'],
-  [VERSIONS.CREATION]: ['home', 'chat', 'ppt', 'excel', 'file', 'video', 'stock', 'bill', 'destiny'],
+  [VERSIONS.CREATION]: ['home', 'chat', 'ppt', 'excel', 'file', 'video', 'stock', 'bill', 'destiny', 'life-timeline', 'hairstyle'],
 };
 
 /**

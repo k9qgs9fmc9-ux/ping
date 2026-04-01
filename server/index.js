@@ -105,6 +105,121 @@ app.get('/api/video/tasks/:taskId', async (req, res) => {
   }
 });
 
+// Life Timeline - Parse Diary Content
+app.post('/api/life-timeline/parse', async (req, res) => {
+  const { diaryContent, systemPrompt } = req.body;
+
+  if (!diaryContent) {
+    return res.status(400).json({ error: 'Diary content is required' });
+  }
+
+  const apiKey = process.env.DASHSCOPE_API_KEY || DEFAULT_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'API Key not configured' });
+  }
+
+  const openai = new OpenAI({
+    apiKey: apiKey,
+    baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+  });
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: 'qwen-max',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: `请处理以下日记内容，生成人生时间轴：\n\n${diaryContent}` }
+      ],
+      response_format: { type: 'json_object' }
+    });
+
+    const resultText = completion.choices[0].message.content;
+    try {
+      const parsedResult = JSON.parse(resultText);
+      res.json(parsedResult);
+    } catch (parseError) {
+      console.error('Failed to parse JSON from AI:', resultText);
+      res.status(500).json({ error: 'AI返回格式错误，无法解析JSON' });
+    }
+  } catch (error) {
+    console.error('Error calling DashScope for timeline parsing:', error);
+    res.status(500).json({
+      error: 'Failed to parse diary content',
+      details: error.message
+    });
+  }
+});
+
+// AI Hairstyle Generation - Image to Image
+app.post('/api/hairstyle/generate', async (req, res) => {
+  const { image, prompt } = req.body;
+
+  if (!image) {
+    return res.status(400).json({ error: 'Image is required' });
+  }
+
+  const apiKey = process.env.DASHSCOPE_API_KEY || DEFAULT_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'API Key not configured' });
+  }
+
+  try {
+    // 使用通义万相图像生图（图生图）
+    const response = await axios.post(
+      'https://dashscope.aliyuncs.com/api/v1/services/aigc/image-generation/generation',
+      {
+        model: 'wanx2.1-t2i-plus',
+        input: {
+          prompt: prompt,
+          image: image
+        },
+        parameters: {
+          size: '1024*1024',
+          n: 1
+        }
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'X-DashScope-Async': 'enable',
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Hairstyle Generation Error:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).json(error.response?.data || { error: error.message });
+  }
+});
+
+// Check Hairstyle Generation Task Status
+app.get('/api/hairstyle/tasks/:taskId', async (req, res) => {
+  const apiKey = req.headers.authorization?.split(' ')[1] || process.env.DASHSCOPE_API_KEY || DEFAULT_API_KEY;
+  const { taskId } = req.params;
+
+  if (!apiKey) {
+    return res.status(401).json({ error: 'API Key required' });
+  }
+
+  try {
+    const response = await axios.get(
+      `https://dashscope.aliyuncs.com/api/v1/tasks/${taskId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`
+        }
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Task Status Error:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).json(error.response?.data || { error: error.message });
+  }
+});
+
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
 app.get(/.*/, (req, res) => {

@@ -17,7 +17,9 @@ import {
   CompassOutlined,
   HeartOutlined,
   ShopOutlined,
-  PayCircleOutlined
+  PayCircleOutlined,
+  RiseOutlined,
+  ScissorOutlined
 } from '@ant-design/icons';
 import { useSettings } from '../context/SettingsContext';
 import ThemeSwitcher from './ThemeSwitcher';
@@ -91,6 +93,16 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
       key: 'destiny',
       icon: <CompassOutlined style={{ fontSize: '18px' }} />,
       label: '国学命理',
+    },
+    {
+      key: 'life-timeline',
+      icon: <RiseOutlined style={{ fontSize: '18px' }} />,
+      label: '人生轨迹',
+    },
+    {
+      key: 'hairstyle',
+      icon: <ScissorOutlined style={{ fontSize: '18px' }} />,
+      label: 'AI发型设计',
     },
   ];
 

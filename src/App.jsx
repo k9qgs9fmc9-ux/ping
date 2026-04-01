@@ -6,6 +6,8 @@ import PPTGenerator from './components/PPTGenerator';
 import ExcelGenerator from './components/ExcelGenerator';
 import FileAnalyzer from './components/FileAnalyzer';
 import VideoGenerator from './components/VideoGenerator';
+import LifeTimelineVideo from './components/LifeTimelineVideo';
+import AiHairstyle from './components/AiHairstyle';
 import StockAnalyzer from './components/StockAnalyzer';
 import DestinyAnalyzer from './components/DestinyAnalyzer';
 import HomeDashboard from './components/HomeDashboard';
@@ -60,6 +62,10 @@ function AppContent() {
         return <BillManager />;
       case 'destiny':
         return <DestinyAnalyzer />;
+      case 'life-timeline':
+        return <LifeTimelineVideo />;
+      case 'hairstyle':
+        return <AiHairstyle />;
       default:
         return <Chat />;
     }
