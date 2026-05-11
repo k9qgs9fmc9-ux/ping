@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { sendMessage, addUserMessage, clearHistory, switchMode } from './features/chat/chatSlice';
 import { Input, Button, Typography, Avatar, Tooltip, Dropdown, Space, Empty, Tag, Grid } from 'antd';
-import { SendOutlined, UserOutlined, DeleteOutlined, ShopOutlined, PayCircleOutlined, RiseOutlined, HomeOutlined, HeartOutlined, DownOutlined, SettingOutlined, RobotOutlined, CommentOutlined } from '@ant-design/icons';
+import { SendOutlined, UserOutlined, DeleteOutlined, ShopOutlined, PayCircleOutlined, RiseOutlined, HomeOutlined, HeartOutlined, DownOutlined, SettingOutlined, RobotOutlined, CommentOutlined, RocketOutlined, DownloadOutlined } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -17,6 +17,7 @@ const { useBreakpoint } = Grid;
 
 const MODE_ICONS = {
   [MODES.GENERAL]: CommentOutlined,
+  [MODES.AI_EXPERT]: RocketOutlined,
   [MODES.PRODUCT]: ShopOutlined,
   [MODES.FINANCE]: PayCircleOutlined,
   [MODES.STOCK]: RiseOutlined,
@@ -24,7 +25,7 @@ const MODE_ICONS = {
   [MODES.PARENTING]: HeartOutlined,
 };
 
-const Chat = () => {
+const Chat = ({ initialMode }) => {
   const [inputValue, setInputValue] = useState('');
   const { apiKey, chatBaseUrl, openSettings, currentTheme } = useSettings();
   const themeColors = THEME_COLORS[currentTheme];
@@ -35,6 +36,13 @@ const Chat = () => {
 
   const screens = useBreakpoint();
   const isMobile = !screens.md;
+
+  // Sync mode with initialMode prop
+  useEffect(() => {
+    if (initialMode && mode !== initialMode) {
+      dispatch(switchMode(initialMode));
+    }
+  }, [initialMode, dispatch]);
 
   const currentConfig = getModeConfig(mode);
   const CurrentIcon = MODE_ICONS[mode] || CommentOutlined;
@@ -60,6 +68,23 @@ const Chat = () => {
     dispatch(clearHistory());
   };
 
+  const handleExport = () => {
+    const chatContent = messages
+      .filter(m => m.role !== 'system')
+      .map(m => `${m.role === 'user' ? '用户' : 'AI 专家'}:\n${m.content}`)
+      .join('\n\n---\n\n');
+    
+    const blob = new Blob([chatContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `AI专家对话导出_${new Date().toLocaleDateString()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handleModeChange = ({ key }) => {
     dispatch(switchMode(key));
   };
@@ -72,6 +97,15 @@ const Chat = () => {
           <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
             <CommentOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} />
             <span style={{ fontWeight: 500 }}>通用咨询</span>
+          </Space>
+        ),
+      },
+      {
+        key: MODES.AI_EXPERT,
+        label: (
+          <Space style={{ color: themeColors?.textPrimary || '#1f1f1f', fontSize: '14px' }}>
+            <RocketOutlined style={{ color: themeColors?.primary, fontSize: '16px' }} />
+            <span style={{ fontWeight: 500 }}>AI 领域专家</span>
           </Space>
         ),
       },
@@ -206,6 +240,14 @@ const Chat = () => {
           </div>
         </div>
         <Space size={isMobile ? 0 : 8}>
+          <Tooltip title="导出对话">
+            <Button
+              icon={<DownloadOutlined />}
+              onClick={handleExport}
+              type="text"
+              style={{ color: 'var(--tech-text-dim)' }}
+            />
+          </Tooltip>
           <Tooltip title="清空对话">
             <Button
               icon={<DeleteOutlined />}

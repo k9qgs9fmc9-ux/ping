@@ -12,6 +12,7 @@ import StockAnalyzer from './components/StockAnalyzer';
 import DestinyAnalyzer from './components/DestinyAnalyzer';
 import HomeDashboard from './components/HomeDashboard';
 import BillManager from './components/BillManager';
+import AiNews from './components/AiNews';
 import './App.css';
 import TechBackground from './components/TechBackground';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
@@ -48,6 +49,8 @@ function AppContent() {
         return <HomeDashboard onModuleChange={handleModuleChange} />;
       case 'chat':
         return <Chat />;
+      case 'ai-expert':
+        return <Chat initialMode="ai_expert" />;
       case 'ppt':
         return <PPTGenerator />;
       case 'excel':
@@ -66,6 +69,8 @@ function AppContent() {
         return <LifeTimelineVideo />;
       case 'hairstyle':
         return <AiHairstyle />;
+      case 'ai-news':
+        return <AiNews />;
       default:
         return <Chat />;
     }

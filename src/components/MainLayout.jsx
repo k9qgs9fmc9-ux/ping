@@ -19,7 +19,8 @@ import {
   ShopOutlined,
   PayCircleOutlined,
   RiseOutlined,
-  ScissorOutlined
+  ScissorOutlined,
+  RocketOutlined
 } from '@ant-design/icons';
 import { useSettings } from '../context/SettingsContext';
 import ThemeSwitcher from './ThemeSwitcher';
@@ -60,6 +61,11 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
       label: '智能对话',
     },
     {
+      key: 'ai-expert',
+      icon: <RocketOutlined style={{ fontSize: '18px' }} />,
+      label: 'AI 专家',
+    },
+    {
       key: 'ppt',
       icon: <FilePptOutlined style={{ fontSize: '18px' }} />,
       label: 'PPT 生成',
@@ -73,6 +79,11 @@ const MainLayout = ({ activeModule, onModuleChange, onOpenAccessKeyModal, childr
       key: 'file',
       icon: <FileTextOutlined style={{ fontSize: '18px' }} />,
       label: '文件分析',
+    },
+    {
+      key: 'ai-news',
+      icon: <RocketOutlined style={{ fontSize: '18px' }} />,
+      label: 'AI 资讯',
     },
     {
       key: 'video',

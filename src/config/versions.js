@@ -17,7 +17,7 @@ export const VERSION_INFO = {
   [VERSIONS.PUBLIC]: {
     name: '公开版',
     description: '免费使用基础功能',
-    features: ['智能对话', 'PPT生成', 'Excel助手', '文件分析'],
+    features: ['智能对话', 'PPT生成', 'Excel助手', '文件分析', 'AI行业动态'],
   },
   [VERSIONS.PRIVATE]: {
     name: '私有版',
@@ -45,9 +45,9 @@ export const getVersionByKey = (key) => {
  * 为每个版本定义可用的模块
  */
 export const MODULE_PERMISSIONS = {
-  [VERSIONS.PUBLIC]: ['home', 'chat', 'ppt', 'excel', 'file'],
-  [VERSIONS.PRIVATE]: ['home', 'chat', 'ppt', 'excel', 'file', 'video', 'stock'],
-  [VERSIONS.CREATION]: ['home', 'chat', 'ppt', 'excel', 'file', 'video', 'stock', 'bill', 'destiny', 'life-timeline', 'hairstyle'],
+  [VERSIONS.PUBLIC]: ['home', 'chat', 'ai-expert', 'ppt', 'excel', 'file', 'ai-news'],
+  [VERSIONS.PRIVATE]: ['home', 'chat', 'ai-expert', 'ppt', 'excel', 'file', 'ai-news', 'video', 'stock'],
+  [VERSIONS.CREATION]: ['home', 'chat', 'ai-expert', 'ppt', 'excel', 'file', 'ai-news', 'video', 'stock', 'bill', 'destiny', 'life-timeline', 'hairstyle'],
 };
 
 /**
