@@ -11,41 +11,34 @@ import OpenAI from 'openai';
  * @param {String} [params.baseUrl] - Base URL (if direct mode)
  */
 export const sendChatRequest = async ({ messages, apiKey, baseUrl }) => {
-  // 1. Direct Mode: If API Key is provided, use OpenAI SDK directly in browser
-  if (apiKey) {
-    const openai = new OpenAI({
-      apiKey: apiKey,
-      baseURL: baseUrl || 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-      dangerouslyAllowBrowser: true 
-    });
-
-    try {
-      const completion = await openai.chat.completions.create({
-        model: 'qwen-max',
-        messages: messages,
-      });
-      return completion.choices[0].message;
-    } catch (error) {
-      // Enhance error message for CORS
-      if (error.message && error.message.includes('Network Error')) { // Axios/Fetch often report CORS as Network Error
-        throw new Error(`网络请求失败。这可能是由于 CORS 跨域限制导致的。在纯前端模式下，请尝试安装允许跨域的浏览器插件，或使用支持 CORS 的代理地址。\n原始错误: ${error.message}`);
-      }
-      throw error;
-    }
-  }
-
-  // 2. Proxy Mode: Fallback to backend server
-  // Always use relative path to rely on Vite Proxy (Dev) or Same-Origin (Prod)
-  const apiBase = '/api/chat';
-  
+  // 1. Try Proxy Mode first (Recommended to avoid CORS and hide API Key)
   try {
+    const apiBase = '/api/chat';
     const response = await axios.post(apiBase, { messages });
     return response.data.choices[0].message;
-  } catch (error) {
-    if (error.response && error.response.status === 404) {
-      throw new Error("检测到无后端服务，且未配置 API Key。请点击左下角“全局设置”填入 API Key 以使用纯前端模式。");
+  } catch (proxyError) {
+    // 2. Direct Mode: Fallback if Proxy is unavailable (e.g. 404 No Backend)
+    if (apiKey && (proxyError.response?.status === 404 || proxyError.code === 'ERR_NETWORK')) {
+      const openai = new OpenAI({
+        apiKey: apiKey,
+        baseURL: baseUrl || 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+        dangerouslyAllowBrowser: true 
+      });
+
+      try {
+        const completion = await openai.chat.completions.create({
+          model: 'qwen-max',
+          messages: messages,
+        });
+        return completion.choices[0].message;
+      } catch (directError) {
+        if (directError.message && directError.message.includes('Network Error')) {
+          throw new Error(`网络请求失败。这可能是由于 CORS 跨域限制导致的。在纯前端模式下，建议使用支持 CORS 的代理地址或开启后端服务。\n原始错误: ${directError.message}`);
+        }
+        throw directError;
+      }
     }
-    throw error;
+    throw proxyError;
   }
 };
 

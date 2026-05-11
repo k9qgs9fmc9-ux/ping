@@ -6,6 +6,9 @@ set -e
 # 生成静态文件
 npm run build
 
+# 创建 .nojekyll 文件以防止 GitHub Pages 忽略以下划线开头的文件夹
+touch dist/.nojekyll
+
 # 设置 git user (避免 commit 时因缺少配置而失败)
 git config --global user.name "GitHub Actions"
 git config --global user.email "actions@github.com"
